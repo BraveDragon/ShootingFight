@@ -7,10 +7,15 @@ BULLET_SPEED = 0.5
 BULLET_STRONG = (255, 0, 0) #威力強の弾
 BULLET_MIDDLE = (0, 255, 0) #威力中の弾
 BULLET_WEAK = (0, 0, 255) #威力小の弾
+WEAK_DAMAGE = 100
+MIDDLE_DAMAGE = 200
+STRONG_DAMAGE = 300
+#弾の大きさ
+BULLET_RADIUS = 25
 
 class Bullet:
-    #弾の大きさ
-    BULLET_RADIUS = 25
+    
+
 
     def __init__(self, x, y, bullettype, bulletdirection):
         self.x = x
@@ -19,16 +24,41 @@ class Bullet:
         self.bulletdirection = bulletdirection
         #画面から見えるか？
         self.visible = True
-    
-    def draw(self, surface):
-        if self.BULLET_RADIUS <= self.y <= Main.Height:
-            pygame.draw.circle(surface,self.bullettype,[int(self.x + self.BULLET_RADIUS), int(self.y)], self.BULLET_RADIUS)
+        #弾の強さ
+        #弱：1, 中：2, 強：3
+        if self.bullettype == BULLET_WEAK:
+            self.bulletlevel = 1
+        elif self.bullettype == BULLET_MIDDLE:
+            self.bulletlevel = 2
+        else:
+            self.bulletlevel = 3
+
+    def draw(self, surface, player1, player2):
+        if BULLET_RADIUS <= self.y <= Main.Height and self.visible == True:
+            pygame.draw.circle(surface,self.bullettype,[int(self.x + BULLET_RADIUS), int(self.y)], BULLET_RADIUS)
         else:
             self.visible = False
-            #TODO: 相手陣に弾が届いたらその分相手のエネルギーを減らす
+            #相手陣に弾が届いたらその分相手のエネルギーを減らす
+            #1Pの弾
+            if self.bulletdirection == -1.0:
+                if self.bullettype == BULLET_WEAK:
+                    player2.currentEnergy -= WEAK_DAMAGE
+                elif self.bullettype == BULLET_MIDDLE:
+                    player2.currentEnergy -= MIDDLE_DAMAGE
+                else:
+                    player2.currentEnergy -= STRONG_DAMAGE
+            #2Pの弾        
+            else:
+                if self.bullettype == BULLET_WEAK:
+                    player1.currentEnergy -= WEAK_DAMAGE
+                elif self.bullettype == BULLET_MIDDLE:
+                    player1.currentEnergy -= MIDDLE_DAMAGE
+                else:
+                    player1.currentEnergy -= STRONG_DAMAGE
+
             
         self.y += BULLET_SPEED * self.bulletdirection
-        #TODO: 弾同士の衝突判定
+        #TODO: 弾同士の衝突判定+弱体化
         
         
         
