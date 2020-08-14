@@ -1,15 +1,17 @@
 import pygame
 import sys
 import Player
-import Main
 BULLET_SPEED = 0.5
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
 BULLET_MIDDLE = (0, 255, 0) #威力中の弾
 BULLET_WEAK = (0, 0, 255) #威力小の弾
-WEAK_DAMAGE = 100
-MIDDLE_DAMAGE = 200
-STRONG_DAMAGE = 300
+WEAK_DAMAGE = 200
+MIDDLE_DAMAGE = 400
+STRONG_DAMAGE = 600
+WEAK_COST = 100
+MIDDLE_COST = 200
+STRONG_COST = 300
 #弾の大きさ
 BULLET_RADIUS = 25
 
@@ -34,7 +36,8 @@ class Bullet:
             self.bulletlevel = 3
 
     def draw(self, surface, player1, player2):
-        if BULLET_RADIUS <= self.y <= Main.Height and self.visible == True:
+        height = pygame.display.get_surface().get_height()
+        if BULLET_RADIUS <= self.y <= height and self.visible == True:
             pygame.draw.circle(surface,self.bullettype,[int(self.x + BULLET_RADIUS), int(self.y)], BULLET_RADIUS)
         else:
             self.visible = False
@@ -58,7 +61,6 @@ class Bullet:
 
             
         self.y += BULLET_SPEED * self.bulletdirection
-        #TODO: 弾同士の衝突判定+弱体化
         
         
         

@@ -14,7 +14,7 @@ Player2 = None
 
 Width = 800
 Height = 600
-Gunpoint_Speed = 1
+Gunpoint_Speed = 0.6
 Player1 = Player.Player(True,False,2000, 1000)
 Player2 = Player.Player(False,False,2000, 1000)
 
@@ -65,64 +65,9 @@ def update():
     if Player2.currentEnergy < Player2.maxEnergy:
         Player2.currentEnergy += 0.2
     
-    #1P
-    #移動
-    if key[Player1.left] == 1:
-        Player1.Move(-Gunpoint_Speed)
-    if key[Player1.right] == 1:
-        Player1.Move(Gunpoint_Speed)
-    #弾を撃つ
-    #弾を撃ったらエネルギーを減らす
-    #押し離しで弾を撃つ
-    #異種の弾の同時撃ちは禁止した方が良いかもしれない
-    #威力小の弾
-    bulletweak_pressed_now1P = key[Player1.bulletweak]
-    if bulletweak_pressed_now1P == 1 and Player1.bulletweak_pressed_past != 1:
-        Player1.currentEnergy -= Bullet.WEAK_DAMAGE
-        Bullets.append(Bullet.Bullet(Player1.GetX()+25,Player1.y, Bullet.BULLET_WEAK, Player1.bulletdirection))
-    Player1.bulletweak_pressed_past = bulletweak_pressed_now1P
-    #威力中の弾
-    bulletmiddle_pressed_now1P = key[Player1.bulletmiddle]
-    if bulletmiddle_pressed_now1P == 1 and Player1.bulletmiddle_pressed_past != 1:
-        Player1.currentEnergy -= Bullet.MIDDLE_DAMAGE
-        Bullets.append(Bullet.Bullet(Player1.GetX()+25,Player1.y, Bullet.BULLET_MIDDLE, Player1.bulletdirection))
-    Player1.bulletmiddle_pressed_past = bulletmiddle_pressed_now1P
-    #威力大の弾
-    bulletstrong_pressed_now1P = key[Player1.bulletstrong]
-    if bulletstrong_pressed_now1P == 1 and Player1.bulletstrong_pressed_past != 1:
-        Player1.currentEnergy -= Bullet.STRONG_DAMAGE
-        Bullets.append(Bullet.Bullet(Player1.GetX()+25,Player1.y, Bullet.BULLET_STRONG, Player1.bulletdirection))
-    Player1.bulletstrong_pressed_past = bulletstrong_pressed_now1P
-
-    #2P
-    #移動
-    if key[Player2.left] == 1:
-        Player2.Move(-Gunpoint_Speed)
-    if key[Player2.right] == 1:
-        Player2.Move(Gunpoint_Speed)
-    
-    #弾を撃つ
-    #押し離しで弾を撃つ
-    #異種の弾の同時撃ちは禁止した方が良いかもしれない
-    #威力小の弾
-    bulletweak_pressed_now2P = key[Player2.bulletweak]
-    if bulletweak_pressed_now2P == 1 and Player2.bulletweak_pressed_past != 1:
-        Player2.currentEnergy -= Bullet.WEAK_DAMAGE
-        Bullets.append(Bullet.Bullet(Player2.GetX()+25,Player2.y, Bullet.BULLET_WEAK, Player2.bulletdirection))
-    Player2.bulletweak_pressed_past = bulletweak_pressed_now2P
-    #威力中の弾
-    bulletmiddle_pressed_now2P = key[Player2.bulletmiddle]
-    if bulletmiddle_pressed_now2P == 1 and Player2.bulletmiddle_pressed_past != 1:
-        Player2.currentEnergy -= Bullet.MIDDLE_DAMAGE
-        Bullets.append(Bullet.Bullet(Player2.GetX()+25,Player2.y, Bullet.BULLET_MIDDLE, Player2.bulletdirection))
-    Player2.bulletmiddle_pressed_past = bulletmiddle_pressed_now2P
-    #威力大の弾
-    bulletstrong_pressed_now2P = key[Player2.bulletstrong]
-    if bulletstrong_pressed_now2P == 1 and Player2.bulletstrong_pressed_past != 1:
-        Player2.currentEnergy -= Bullet.STRONG_DAMAGE
-        Bullets.append(Bullet.Bullet(Player2.GetX()+25,Player2.y, Bullet.BULLET_STRONG, Player2.bulletdirection))
-    Player2.bulletstrong_pressed_past = bulletstrong_pressed_now2P
-    
+    #各プレイヤーの動き
+    Player1.Move(key,bullets=Bullets)
+    Player2.Move(key,bullets=Bullets)
 
     #弾の描画
     for bullet in Bullets:
