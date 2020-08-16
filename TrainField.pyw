@@ -16,8 +16,8 @@ Player2 = None
 Width = 800
 Height = 600
 Gunpoint_Speed = 0.6
-Player1 = Player.Player(True,False)
-Player2 = Player.Player(False,False)
+Player1 = Player.Player(True,True)
+Player2 = Player.Player(False,True)
 
 
 #初期化処理
@@ -67,8 +67,8 @@ def update():
         Player2.currentEnergy += 0.2
     
     #各プレイヤーの動き
-    Player1.Move(key,bullets=Bullets)
-    Player2.Move(key,bullets=Bullets)
+    Player1.Move(bullets=Bullets)
+    Player2.Move(bullets=Bullets)
 
     #弾の描画
     for bullet in Bullets:
@@ -115,19 +115,21 @@ def update():
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, Player2.currentEnergy*0.25, 20])
     
 def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
-    #結果の文字表示
-    font = pygame.font.Font(None, 200)
+    #結果を反映
+    #font = pygame.font.Font(None, 200)
     #1P敗北時
     if player1.currentEnergy <= 0:
-        text = font.render("2P WIN!", True, (255, 255, 255))
-        surface.blit(text,[150, 250])
+        # text = font.render("2P WIN!", True, (255, 255, 255))
+        # surface.blit(text,[150, 250])
+        pass
     #2P敗北時
     else:
-        text = font.render("1P WIN!", True, (255, 255, 255))
-        surface.blit(text,[150, 250])
+        # text = font.render("1P WIN!", True, (255, 255, 255))
+        # surface.blit(text,[150, 250])
+        pass
 
-    if key[pygame.K_SPACE]:
-        start()
+    #if key[pygame.K_SPACE]:
+    start()
 
     
 

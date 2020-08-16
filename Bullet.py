@@ -1,3 +1,4 @@
+#coding: "utf-8"
 import pygame
 import sys
 import Player
@@ -17,8 +18,6 @@ BULLET_RADIUS = 25
 
 class Bullet:
     
-
-
     def __init__(self, x, y, bullettype, bulletdirection):
         self.x = x
         self.y = y
