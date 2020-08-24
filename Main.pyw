@@ -66,9 +66,6 @@ def update():
     if Player2.currentEnergy < Player2.maxEnergy:
         Player2.currentEnergy += 0.2
     
-    #各プレイヤーの動き
-    Player1.Move(key,bullets=Bullets)
-    Player2.Move(key,bullets=Bullets)
 
     #弾の描画
     for bullet in Bullets:
@@ -85,6 +82,10 @@ def update():
         for player2Bullet in player2Bullets:
             if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
+    
+    #各プレイヤーの動き
+    Player1.Move(key=key,bullets=Bullets)
+    Player2.Move(key=key,bullets=Bullets)
     
     #砲台(プレイヤー操作)の描画
     screen.blit(resource.player1,[Player1.GetX(),Player1.y])
