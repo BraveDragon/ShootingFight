@@ -23,7 +23,7 @@ clock = None
 Player1 = None
 Player2 = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#DEVICE = torch.device("cpu")
+
 Width = 800
 Height = 600
 Gunpoint_Speed = 0.6
@@ -84,14 +84,14 @@ def update():
     global resource
     global Player1
     global Player2
-    global Model1P
-    global Model2P
     global action1P
     global action2P
-    global loadaction1P
-    global loadaction2P
+    global Model1P
+    global Model2P
     global Target_Model1P
     global Target_Model2P
+    global loadaction1P
+    global loadaction2P
     global Bullets
 
     global epsiron
@@ -149,12 +149,12 @@ def update():
         loadaction2P = raw_action2P
 
     elif Memory1P.length() > batch_size and Memory2P.length() > batch_size:
-        Inputs1P = np.array(Memory1P.sample(batch_size), dtype=np.float32)
+        Inputs1P = np.array(Memory1P.sample(batch_size))
         action1P = Model1P(torch.from_numpy(Inputs1P).to(DEVICE))
-        Inputs2P = np.array(Memory2P.sample(batch_size), dtype=np.float32)
+        Inputs2P = np.array(Memory2P.sample(batch_size))
         action2P = Model2P(torch.from_numpy(Inputs2P).to(DEVICE))
-        action1P = np.array(action1P.cpu().detach().numpy())
-        action2P = np.array(action2P.cpu().detach().numpy())
+        action1P = action1P.detach().clone().numpy()
+        action2P = action2P.detach().clone().numpy()
         loadaction1P = np.argmax(action1P)
         loadaction2P = np.argmax(action2P)
     
@@ -193,8 +193,8 @@ def update():
     State = NextState
     if Memory1P.length() > batch_size:
         Inputs = np.array(Memory1P.sample(batch_size),dtype=np.float32)
-        Output_train = Model1P(torch.from_numpy(Inputs).to(DEVICE))
-        Output_Target = Target_Model1P(torch.from_numpy(Inputs).to(DEVICE))
+        Output_train = Model1P(torch.from_numpy(Inputs))
+        Output_Target = Target_Model1P(torch.from_numpy(Inputs))
         loss1P = criterion1P(Output_train,Output_Target)
         optimizer1P.zero_grad()
         loss1P.backward(retain_graph=True)
@@ -202,8 +202,8 @@ def update():
     
     if Memory2P.length() > batch_size:
         Inputs = np.array(Memory2P.sample(batch_size),dtype=np.float32)
-        Output_train = Model2P(torch.from_numpy(Inputs).to(DEVICE))
-        Output_Target = Target_Model2P(torch.from_numpy(Inputs).to(DEVICE))
+        Output_train = Model2P(torch.from_numpy(Inputs))
+        Output_Target = Target_Model2P(torch.from_numpy(Inputs))
         loss2P = criterion2P(Output_train,Output_Target)
         optimizer2P.zero_grad()
         loss2P.backward(retain_graph=True)
@@ -309,7 +309,6 @@ def main():
     global optimizer1P
     global optimizer2P
     #何回か楽観的初期化を回す
-    IsNeeded_retain = True
     for i in range(10):
         x1 = Target_Model1P(torch.ones(Agent.Inputs).to(DEVICE))
         x2 = Target_Model2P(torch.ones(Agent.Inputs).to(DEVICE))
@@ -319,9 +318,8 @@ def main():
         loss2P = criterion2P(out2P,x2)
         optimizer1P.zero_grad()
         optimizer2P.zero_grad()
-        loss1P.backward(retain_graph=IsNeeded_retain)
-        loss2P.backward(retain_graph=IsNeeded_retain)
-        IsNeeded_retain = False
+        loss1P.backward(retain_graph=True)
+        loss2P.backward(retain_graph=True)
         optimizer1P.step()
         optimizer2P.step()
     
