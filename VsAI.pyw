@@ -32,8 +32,13 @@ Player1 = Player.Player(True, False)
 Player2 = Player.Player(False,True)
 
 Model2P = Agent.Agent().to(DEVICE)
-Memory2P = Memory.ReplayMemory(memsize)
+Model2P.load_state_dict(torch.load("Model2P.pth"))
 Model2P.train(False)
+
+with open("memory2P.pkl", "rb") as f:
+    Memory2P = pickle.load(f)
+
+
 
 #初期化処理
 def start():
@@ -104,21 +109,10 @@ def update():
             if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
 
-        
-    raw_action2P = np.random.randint(0, Agent.Outputs)
-        
-    action2P = [0] * Agent.Outputs
-        
-    action2P[raw_action2P] = 1
-    #ReplayMemoryへの格納用
-       
-    loadaction2P = raw_action2P
-
-    if Memory2P.length() > batch_size:
-        Inputs2P = np.array(Memory2P.sample(batch_size), dtype=np.float32)
-        action2P = Model2P(torch.from_numpy(Inputs2P).to(DEVICE))
-        action2P = np.array(action2P.cpu().detach().numpy())
-        loadaction2P = np.argmax(action2P)
+    Inputs2P = np.array(Memory2P.sample(batch_size), dtype=np.float32)
+    action2P = Model2P(torch.from_numpy(Inputs2P).to(DEVICE))
+    action2P = np.array(action2P.cpu().detach().numpy())
+    loadaction2P = np.argmax(action2P)
     
     State = getState(player1Bullets, player2Bullets)
     #各プレイヤーの動き
