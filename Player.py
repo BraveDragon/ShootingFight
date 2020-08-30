@@ -3,7 +3,7 @@ import pygame
 import Bullet
 import numpy as np
 
-Gunpoint_Speed = 1
+Gunpoint_Speed = 20
 MaxEnergy = 2000
 StartEnergy = 1000
 class Player:
@@ -46,6 +46,7 @@ class Player:
         #プレイヤー操作時
         if self.isAI == False:
             #移動
+            
             if key[self.left] == 1:
                 self.__x -= Gunpoint_Speed
             if key[self.right] == 1:
@@ -149,7 +150,7 @@ class Player:
             
             if action == 9 and self.bulletweak_pressed_past != 1:
                 #右移動+威力小の弾発射
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= Bullet.WEAK_COST
                 bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletdirection))
                 self.bulletweak_pressed_past = 1
@@ -167,7 +168,7 @@ class Player:
             
             if action == 11 and self.bulletstrong_pressed_past != 1:
                 #右移動+威力大の弾発射
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= Bullet.STRONG_COST
                 bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletdirection))
                 self.bulletweak_pressed_past = 0
@@ -215,7 +216,7 @@ class Player:
             
             if action == 16 and self.bulletweak_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #左移動+小+大
-                self.__x -= Gunpoint_Speed
+                self.__x -= Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 1
                 self.bulletmiddle_pressed_past = 0
@@ -225,7 +226,7 @@ class Player:
 
             if action == 17 and self.bulletmiddle_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #左移動+中+大
-                self.__x -= Gunpoint_Speed
+                self.__x -= Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.MIDDLE_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 0
                 self.bulletmiddle_pressed_past = 1
@@ -235,7 +236,7 @@ class Player:
             
             if action == 18 and self.bulletweak_pressed_past != 1 and self.bulletmiddle_pressed_past != 1:
                 #右移動+小+中
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST)
                 self.bulletweak_pressed_past = 1
                 self.bulletmiddle_pressed_past = 1
@@ -245,7 +246,7 @@ class Player:
             
             if action == 19 and self.bulletweak_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #右移動+小+大
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 1
                 self.bulletmiddle_pressed_past = 0
@@ -255,7 +256,7 @@ class Player:
 
             if action == 20 and self.bulletmiddle_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #右移動+中+大
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.MIDDLE_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 0
                 self.bulletmiddle_pressed_past = 1
@@ -275,7 +276,7 @@ class Player:
                 
             if action == 22 and self.bulletweak_pressed_past != 1 and self.bulletmiddle_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #左移動+弾全発射
-                self.__x -= Gunpoint_Speed
+                self.__x -= Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 1
                 self.bulletmiddle_pressed_past = 1
@@ -286,7 +287,7 @@ class Player:
             
             if action == 23 and self.bulletweak_pressed_past != 1 and self.bulletmiddle_pressed_past != 1 and self.bulletstrong_pressed_past != 1:
                 #右移動+弾全発射
-                self.__x += Gunpoint_Speed
+                self.__x += Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST + Bullet.STRONG_COST)
                 self.bulletweak_pressed_past = 1
                 self.bulletmiddle_pressed_past = 1

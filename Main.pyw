@@ -24,16 +24,15 @@ Player2 = Player.Player(False,False)
 def start():
     global screen
     pygame.init()
-    #TODO: タイトルをマシにする
     pygame.display.set_caption("ShootingFight")
     screen = pygame.display.set_mode((Width, Height))
-    clock = pygame.time.Clock()
-    clock.tick(60)
+    
     global resource
     resource = Resources.Resources()
     global Player1
     global Player2
     global Bullets
+    
     Bullets = []
     Player1.Reset()
     Player2.Reset()
@@ -48,6 +47,9 @@ def update():
     global Player1
     global Player2
     global Bullets
+    #最大フレームレートを60fpsで固定
+    clock = pygame.time.Clock()
+    clock.tick(60)
 
     #キーボード入力を受け取る
     key = pygame.key.get_pressed()
@@ -61,10 +63,10 @@ def update():
     screen.fill((0,0,0,0))
     
     if Player1.currentEnergy < Player1.maxEnergy:
-        Player1.currentEnergy += 0.2
+        Player1.currentEnergy += 5
     
     if Player2.currentEnergy < Player2.maxEnergy:
-        Player2.currentEnergy += 0.2
+        Player2.currentEnergy += 5
     
 
     #弾の描画

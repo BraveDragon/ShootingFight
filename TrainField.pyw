@@ -23,7 +23,6 @@ clock = None
 Player1 = None
 Player2 = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-#DEVICE = torch.device("cpu")
 Width = 800
 Height = 600
 Gunpoint_Speed = 0.6
@@ -57,15 +56,14 @@ current_episode = 0
 max_episode = 10000
 
 
+
+
 #初期化処理
 def start():
     global screen
     pygame.init()
-    #TODO: タイトルをマシにする
     pygame.display.set_caption("ShootingFight")
     screen = pygame.display.set_mode((Width, Height))
-    clock = pygame.time.Clock()
-    clock.tick(60)
     global resource
     resource = Resources.Resources()
     global Player1
@@ -96,7 +94,10 @@ def update():
 
     global epsiron
     global eps_end
-
+    #最大フレームレートを60fpsで固定
+    clock = pygame.time.Clock()
+    clock.tick(60)
+    
     if epsiron > eps_end :
         epsiron -= eps_reduce_rate
 
@@ -116,10 +117,10 @@ def update():
     screen.fill((0,0,0,0))
     
     if Player1.currentEnergy < Player1.maxEnergy:
-        Player1.currentEnergy += 0.2
+        Player1.currentEnergy += 5
     
     if Player2.currentEnergy < Player2.maxEnergy:
-        Player2.currentEnergy += 0.2
+        Player2.currentEnergy += 5
 
     #弾の描画
     for bullet in Bullets:
@@ -185,8 +186,8 @@ def update():
 
         Experience2P = []
         Experience2P.extend(State)
-        Experience2P.append(P1reward)
-        Experience2P.append(loadaction1P)
+        Experience2P.append(float(P2Reward))
+        Experience2P.append(loadaction2P)
         Experience2P.extend(NextState)
         Memory2P.load(Experience2P)
     

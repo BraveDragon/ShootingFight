@@ -2,7 +2,7 @@
 import pygame
 import sys
 import Player
-BULLET_SPEED = 0.5
+BULLET_SPEED = 10
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
 BULLET_MIDDLE = (0, 255, 0) #威力中の弾
