@@ -8,7 +8,7 @@ import numpy as np
 import Bullet
 
 Inputs = 610
-Outputs = 24
+Outputs = 23
 #AIを定義するクラス
 class Agent(nn.Module):
     def __init__(self):
@@ -17,8 +17,7 @@ class Agent(nn.Module):
                                    nn.LeakyReLU(),
                                    nn.Linear(100, 50),
                                    nn.LeakyReLU(),
-                                   nn.Linear(50, Outputs),
-                                   nn.Softmax(dim=0))
+                                   nn.Linear(50, Outputs))
     
     def forward(self, x):
         x = self.conv(x)
