@@ -41,4 +41,4 @@
 ![Demoplay](https://github.com/BraveDragon/ShootingFight/blob/master/DemoPlay.gif)
 
 ## ＜ゲームの遊び方＞
-「ゲームの遊び方.md」をご覧ください。
+![「ゲームの遊び方.md」](https://github.com/BraveDragon/ShootingFight/blob/master/%E3%82%B2%E3%83%BC%E3%83%A0%E3%81%AE%E9%81%8A%E3%81%B3%E6%96%B9.md)をご覧ください。
