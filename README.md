@@ -38,7 +38,7 @@
 
 ## 実際のプレイ動画
 
-![Demoplay](https://github.com/BraveDragon/AI-CardBattle/blob/master/DemoPlay.gif)
+![Demoplay](https://github.com/BraveDragon/ShootingFight/blob/master/DemoPlay.gif)
 
 ## ＜ゲームの遊び方＞
 「ゲームの遊び方.md」をご覧ください。
