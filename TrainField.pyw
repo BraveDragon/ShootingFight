@@ -15,7 +15,6 @@ import numpy as np
 import Memory
 import pickle
 
-#TODO: トレーニングのコード+行動反映のコード
 Bullets = []
 resource = None
 screen = None
@@ -311,7 +310,7 @@ def main():
     global optimizer2P
     #何回か楽観的初期化を回す
     IsNeeded_retain = True
-    for i in range(10):
+    for _ in range(10):
         x1 = Target_Model1P(torch.ones(Agent.Inputs).to(DEVICE))
         x2 = Target_Model2P(torch.ones(Agent.Inputs).to(DEVICE))
         out1P = torch.ones(Agent.Outputs).to(DEVICE)

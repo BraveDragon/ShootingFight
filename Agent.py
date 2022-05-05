@@ -3,24 +3,26 @@ import torch
 import torch.nn as nn
 import torch.optim
 import torch.nn.functional as F
-import numpy as np
-
-import Bullet
 
 Inputs = 610
 Outputs = 23
+#この一文で学習を高速化
+torch.backends.cudnn.benchmark = True
 #AIを定義するクラス
 class Agent(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv = nn.Sequential( nn.Linear(Inputs,100),
-                                   nn.LeakyReLU(),
-                                   nn.Linear(100, 50),
-                                   nn.LeakyReLU(),
-                                   nn.Linear(50, Outputs))
+        self.fc1 = nn.Linear(Inputs,100)
+        self.fc2 = nn.Linear(100, 50)
+        self.fc3 = nn.Linear(50, Outputs)
     
     def forward(self, x):
-        x = self.conv(x)
+        x = self.fc1(x)
+        x = F.rrelu(x)
+        x = self.fc2(x)
+        x = F.rrelu(x)
+        x = self.fc3(x)
+
         return(x)
         
 

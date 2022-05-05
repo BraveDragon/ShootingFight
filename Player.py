@@ -333,4 +333,3 @@ class Player:
     def GetX(self):
         return self.__x
         
-        #TODO: AI対応(Agentクラスやそのラッパークラスで対応した方が良いかも)
