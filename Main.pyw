@@ -93,7 +93,7 @@ def update():
     screen.blit(resource.player1,[Player1.GetX(),Player1.y])
     screen.blit(resource.player2,[Player2.GetX(),Player2.y])
 
-    screen.blit(resource.ufo,[150, 250])
+    #screen.blit(resource.ufo,[150, 250])
     
     
     

@@ -18,6 +18,8 @@ class Player:
         self.bulletweak_pressed_past = 0
         self.bulletmiddle_pressed_past = 0
         self.bulletstrong_pressed_past = 0
+        self.numberOfBlowAliens = 0 #エイリアンの撃破数(この数だけ攻撃力が上がる)
+        self.IsInvincible = False #無敵状態か？(UFOを倒すと、10秒だけ無敵になれる)
 
         if self.is1P == True:
             self.left = pygame.K_a

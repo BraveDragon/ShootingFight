@@ -7,4 +7,4 @@ class Resources:
     player2 = pygame.image.load("Resources/GunPoint2P.png")
     ufo = pygame.image.load("Resources/UFO.png")
     #そのまま読みこむとUFOの画像は大きすぎるので、ここで縮小する
-    ufo = pygame.transform.scale(ufo,[Objects.Objects.width,Objects.Objects.height])
+    ufo = pygame.transform.scale(ufo,[Objects.UFO_WIDTH,Objects.UFO_HEIGHT])
