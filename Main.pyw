@@ -104,7 +104,7 @@ def update():
         EnergyColor_1P = (0, 255, 0)
     
     if Player1.currentEnergy > 0:
-        pygame.draw.rect(screen, EnergyColor_1P, [10, 570, Player1.currentEnergy*0.25, 20])
+        pygame.draw.rect(screen, EnergyColor_1P, [10, 570, int(Player1.currentEnergy*0.25), 20])
     #2P
     EnergyColor_2P = (0,0,0)
     if Player2.currentEnergy < 500:
@@ -115,7 +115,7 @@ def update():
         EnergyColor_2P = (0, 255, 0)
     
     if Player2.currentEnergy > 0:
-        pygame.draw.rect(screen, EnergyColor_2P, [290, 10, Player2.currentEnergy*0.25, 20])
+        pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(Player2.currentEnergy*0.25), 20])
     
 def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
     #結果の文字表示
