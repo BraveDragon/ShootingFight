@@ -62,10 +62,10 @@ def update():
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
     
-    if Player1.currentEnergy < Player1.maxEnergy:
+    if Player1.currentEnergy < Player.Player.maxEnergy:
         Player1.currentEnergy += 2
     
-    if Player2.currentEnergy < Player2.maxEnergy:
+    if Player2.currentEnergy < Player.Player.maxEnergy:
         Player2.currentEnergy += 2
     
 
