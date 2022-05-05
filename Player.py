@@ -7,15 +7,14 @@ Gunpoint_Speed = 20
 MaxEnergy = 2000
 StartEnergy = 1000
 class Player:
+    maxEnergy = MaxEnergy
     def __init__(self, is1P:bool, isAI:bool):
         #1P・2P共通部分の初期化
         #yはいらないかも
         self.is1P = is1P
         self.isAI = isAI
-        self.maxEnergy = MaxEnergy
         self.currentEnergy = StartEnergy
         self.__x = 350
-
         self.bulletweak_pressed_past = 0
         self.bulletmiddle_pressed_past = 0
         self.bulletstrong_pressed_past = 0
@@ -28,9 +27,7 @@ class Player:
             self.bulletstrong = pygame.K_t
             self.bulletdirection = -1.0
             self.y = 500
-            
-            
-        
+    
         else:
             self.left = pygame.K_LEFT
             self.right = pygame.K_RIGHT

@@ -55,7 +55,7 @@ def update():
     key = pygame.key.get_pressed()
     #勝敗判定
     if Player1.currentEnergy <= 0 or Player2.currentEnergy <= 0:
-        Result(Player1, Player2, key, screen)
+        Result(Player1, key, screen)
         #ここでupdate()を打ち切る
         return
     
@@ -63,10 +63,10 @@ def update():
     screen.fill((0,0,0,0))
     
     if Player1.currentEnergy < Player1.maxEnergy:
-        Player1.currentEnergy += 5
+        Player1.currentEnergy += 2
     
     if Player2.currentEnergy < Player2.maxEnergy:
-        Player2.currentEnergy += 5
+        Player2.currentEnergy += 2
     
 
     #弾の描画
@@ -117,7 +117,7 @@ def update():
     if Player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(Player2.currentEnergy*0.25), 20])
     
-def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
+def Result(player1:Player.Player, key:tuple, surface):
     #結果の文字表示
     font = pygame.font.Font(None, 200)
     #1P敗北時
