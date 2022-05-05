@@ -1,7 +1,6 @@
 #coding: "utf-8"
 import pygame
-import sys
-import Player
+
 BULLET_SPEED = 10
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
