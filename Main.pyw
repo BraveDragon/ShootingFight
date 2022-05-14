@@ -82,7 +82,7 @@ def update():
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
-            if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
+            if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
     
     #各プレイヤーの動き
@@ -93,15 +93,15 @@ def update():
     screen.blit(resource.player1,[Player1.GetX(),Player1.y])
     screen.blit(resource.player2,[Player2.GetX(),Player2.y])
 
-    #screen.blit(resource.ufo,[150, 250])
-    
-    
-    
+    screen.blit(resource.alian,[150, 250])
 
     #エネルギーバーの描画
     #エネルギーの残りで色を変える
+    #無敵状態の時は残りエネルギーに関わらず青色になる
     #1P
-    if Player1.currentEnergy < 500:
+    if Player1.IsInvincible == True:
+        EnergyColor_1P = (0, 0, 255)
+    elif Player1.currentEnergy < 500:
         EnergyColor_1P = (255, 0, 0)
     elif 500 <= Player1.currentEnergy < 1500:
         EnergyColor_1P = (255, 255, 0)
@@ -111,8 +111,9 @@ def update():
     if Player1.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_1P, [10, 570, int(Player1.currentEnergy*0.25), 20])
     #2P
-    EnergyColor_2P = (0,0,0)
-    if Player2.currentEnergy < 500:
+    if Player2.IsInvincible == True:
+        EnergyColor_2P = (0, 0, 255)
+    elif Player2.currentEnergy < 500:
         EnergyColor_2P = (255, 0, 0)
     elif 500 <= Player2.currentEnergy < 1500:
         EnergyColor_2P = (255, 255, 0)
@@ -152,8 +153,8 @@ def main():
         update()
 
 #弾の衝突判定を行う
-def getCollition(x1, x2, y1, y2, radius):
-    if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= radius ** 2:
+def getCollition(x1, x2, y1, y2, radius1, radius2):
+    if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= (radius1 + radius2) ** 2:
         return True
     else:
         return False

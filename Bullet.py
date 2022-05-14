@@ -1,6 +1,8 @@
 #coding: "utf-8"
 import pygame
 
+from Player import Player
+
 BULLET_SPEED = 10
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
@@ -14,6 +16,7 @@ MIDDLE_COST = 200
 STRONG_COST = 300
 #弾の大きさ
 BULLET_RADIUS = 25
+AttackBonus = 10 #エイリアンを1体倒すごとに得られる攻撃力ボーナス(ダメージがこの数値分増える)
 
 class Bullet:
     
@@ -33,29 +36,30 @@ class Bullet:
         else:
             self.bulletlevel = 3
 
-    def draw(self, surface, player1, player2):
+    def draw(self, surface, player1:Player, player2:Player):
         height = pygame.display.get_surface().get_height()
         if BULLET_RADIUS <= self.y <= height and self.visible == True:
             pygame.draw.circle(surface,self.bullettype,[int(self.x + BULLET_RADIUS), int(self.y)], BULLET_RADIUS)
         else:
             self.visible = False
             #相手陣に弾が届いたらその分相手のエネルギーを減らす
+            #エイリアンを倒した分のボーナスダメージも同時に入る
             #1Pの弾
-            if self.bulletdirection == -1.0:
+            if self.bulletdirection == -1.0 and player2.IsInvincible == False:
                 if self.bullettype == BULLET_WEAK:
-                    player2.currentEnergy -= WEAK_DAMAGE
+                    player2.currentEnergy -= (WEAK_DAMAGE + AttackBonus * player1.numberOfBlowAliens)
                 elif self.bullettype == BULLET_MIDDLE:
-                    player2.currentEnergy -= MIDDLE_DAMAGE
+                    player2.currentEnergy -= (MIDDLE_DAMAGE + AttackBonus * player1.numberOfBlowAliens)
                 else:
-                    player2.currentEnergy -= STRONG_DAMAGE
+                    player2.currentEnergy -= (STRONG_DAMAGE + AttackBonus * player1.numberOfBlowAliens)
             #2Pの弾        
-            else:
+            elif player1.IsInvincible == False:
                 if self.bullettype == BULLET_WEAK:
-                    player1.currentEnergy -= WEAK_DAMAGE
+                    player1.currentEnergy -= (WEAK_DAMAGE + AttackBonus * player2.numberOfBlowAliens)
                 elif self.bullettype == BULLET_MIDDLE:
-                    player1.currentEnergy -= MIDDLE_DAMAGE
+                    player1.currentEnergy -= (MIDDLE_DAMAGE + AttackBonus * player2.numberOfBlowAliens)
                 else:
-                    player1.currentEnergy -= STRONG_DAMAGE
+                    player1.currentEnergy -= (STRONG_DAMAGE + AttackBonus * player2.numberOfBlowAliens)
 
             
         self.y += BULLET_SPEED * self.bulletdirection

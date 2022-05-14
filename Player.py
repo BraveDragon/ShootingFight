@@ -6,6 +6,7 @@ import numpy as np
 Gunpoint_Speed = 20
 MaxEnergy = 2000
 StartEnergy = 1000
+InvincibleTime = 300 #無敵時間(1秒60フレームなので、300フレーム=5秒となる)
 class Player:
     maxEnergy = MaxEnergy
     def __init__(self, is1P:bool, isAI:bool):
@@ -19,7 +20,8 @@ class Player:
         self.bulletmiddle_pressed_past = 0
         self.bulletstrong_pressed_past = 0
         self.numberOfBlowAliens = 0 #エイリアンの撃破数(この数だけ攻撃力が上がる)
-        self.IsInvincible = False #無敵状態か？(UFOを倒すと、10秒だけ無敵になれる)
+        self.IsInvincible = False #無敵状態か？(UFOを倒すと、5秒だけ無敵になれる)
+        self.InvincibleCount = 0 #無敵状態のカウント(毎フレーム1加算。InvincibleTimeを超えれば無敵状態を解除)
 
         if self.is1P == True:
             self.left = pygame.K_a
@@ -45,7 +47,6 @@ class Player:
         #プレイヤー操作時
         if self.isAI == False:
             #移動
-            
             if key[self.left] == 1:
                 self.__x -= Gunpoint_Speed
             if key[self.right] == 1:
@@ -55,6 +56,7 @@ class Player:
             #弾を撃ったらエネルギーを減らす
             #押し離しで弾を撃つ
             #異種の弾の同時撃ちは禁止した方が良いかもしれない
+
             #威力小の弾
             bulletweak_pressed_now = key[self.bulletweak]
             if bulletweak_pressed_now == 1 and self.bulletweak_pressed_past != 1:
@@ -289,15 +291,19 @@ class Player:
                 bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletdirection))
                 bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletdirection))
             
-            
-
+        
         #行き過ぎの抑制
-        #TODO:画像サイズが違う場合に対応
         surface = pygame.display.get_surface()
         if self.__x <= 0:
             self.__x = 0
         if self.__x >= surface.get_width() - 100:
             self.__x = surface.get_width() - 100
+        
+        if self.IsInvincible == True:
+            self.InvincibleCount += 1
+        
+        if self.InvincibleCount >= InvincibleTime:
+            self.IsInvincible = False
     
     #ゲーム開始時の状態に戻す
     def Reset(self):

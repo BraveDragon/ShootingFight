@@ -12,7 +12,7 @@ UFO_RADIUS = 75
 #エイリアンの幅、高さ、半径
 ALIEN_WIDTH = 100
 ALIEN_HEIGHT = 100
-ALIEN_RADIUS = 75
+ALIEN_RADIUS = 50
 
 
 class Objects:
