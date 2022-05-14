@@ -8,3 +8,6 @@ class Resources:
     ufo = pygame.image.load("Resources/UFO.png")
     #そのまま読みこむとUFOの画像は大きすぎるので、ここで縮小する
     ufo = pygame.transform.scale(ufo,[Objects.UFO_WIDTH,Objects.UFO_HEIGHT])
+    #そのまま読みこむとエイリアンの画像は大きすぎるので、ここで縮小する
+    alian = pygame.image.load("Resources/Alien.png")
+    alian = pygame.transform.scale(alian,[Objects.ALIEN_WIDTH,Objects.ALIEN_HEIGHT])
