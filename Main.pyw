@@ -1,12 +1,16 @@
 #coding: "utf-8"
 import pygame
 import sys
+import Objects
 import Resources
-import Player
 import Bullet
+import Player
+import numpy as np
 
 
 Bullets = []
+UFOs = []
+Aliens = []
 resource = None
 screen = None
 clock = None
@@ -18,8 +22,10 @@ Height = 600
 Gunpoint_Speed = 0.6
 Player1 = Player.Player(True,False)
 Player2 = Player.Player(False,False)
+MAX_UFOs = 1
+MAX_Aliens = 2
 
-
+alien = Objects.Objects(150,250,Objects.ALIEN,resource,moveToRightFlag=True)
 #初期化処理
 def start():
     global screen
@@ -32,8 +38,12 @@ def start():
     global Player1
     global Player2
     global Bullets
+    global UFOs
+    global Aliens
     
     Bullets = []
+    UFOs = []
+    Aliens = []
     Player1.Reset()
     Player2.Reset()
     
@@ -47,6 +57,8 @@ def update():
     global Player1
     global Player2
     global Bullets
+    global UFOs
+    global Aliens
     #最大フレームレートを60fpsで固定
     clock = pygame.time.Clock()
     clock.tick(60)
@@ -82,7 +94,7 @@ def update():
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
-            if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS, Bullet.BULLET_RADIUS) == True:
+            if getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
     
     #各プレイヤーの動き
@@ -92,8 +104,34 @@ def update():
     #砲台(プレイヤー操作)の描画
     screen.blit(resource.player1,[Player1.GetX(),Player1.y])
     screen.blit(resource.player2,[Player2.GetX(),Player2.y])
-
-    screen.blit(resource.alian,[150, 250])
+    #エイリアンの生成
+    if len(Aliens) <= MAX_Aliens:
+        x = np.random.rand() * (Width / 2)
+        y = np.random.rand() * (Height * 0.5) + 100
+        LorR = np.random.rand()
+        if LorR > 0.5:
+            Aliens.append(Objects.Objects(x,y,1,resource,moveToRightFlag=True))
+        else:
+            Aliens.append(Objects.Objects(x,y,1,resource,moveToRightFlag=False))
+    #エイリアンの描画
+    for alien in Aliens:
+        alien.draw(screen,resource.alien)
+    #画面外に出たエイリアンを削除
+    Aliens = [alien for alien in Aliens if alien.visible == True]
+    
+    #UFOの生成
+    if len(UFOs) <= MAX_UFOs:
+        x = np.random.rand() * (Width / 2)
+        y = np.random.rand() * (Height * 0.5) + 100
+        LorR = np.random.rand()
+        if LorR > 0.5:
+            UFOs.append(Objects.Objects(x,y,0,resource,moveToRightFlag=True))
+        else:
+            UFOs.append(Objects.Objects(x,y,0,resource,moveToRightFlag=False))
+    for ufo in UFOs:
+        ufo.draw(screen,resource.ufo)
+    #画面外に出たUFOを削除
+    UFOs = [ufo for ufo in UFOs if ufo.visible == True]
 
     #エネルギーバーの描画
     #エネルギーの残りで色を変える
@@ -122,6 +160,20 @@ def update():
     
     if Player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(Player2.currentEnergy*0.25), 20])
+    
+    #無敵状態の処理
+    if Player1.IsInvincible == True:
+        Player1.InvincibleCount += 1
+    if Player1.IsInvincible == True and Player1.InvincibleCount >= Player.InvincibleTime:
+        Player1.IsInvincible = False
+        Player1.InvincibleCount = 0
+    
+    if Player2.IsInvincible == True:
+        Player2.InvincibleCount += 1
+    if Player2.IsInvincible == True and Player2.InvincibleCount >= Player.InvincibleTime:
+        Player2.IsInvincible = False
+        Player2.InvincibleCount = 0
+
     
 def Result(player1:Player.Player, key:tuple, surface):
     #結果の文字表示
@@ -153,7 +205,7 @@ def main():
         update()
 
 #弾の衝突判定を行う
-def getCollition(x1, x2, y1, y2, radius1, radius2):
+def getCollision(x1, x2, y1, y2, radius1, radius2):
     if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= (radius1 + radius2) ** 2:
         return True
     else:

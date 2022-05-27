@@ -1,8 +1,6 @@
 #coding: "utf-8"
 import pygame
 
-from Player import Player
-
 BULLET_SPEED = 10
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
@@ -36,7 +34,7 @@ class Bullet:
         else:
             self.bulletlevel = 3
 
-    def draw(self, surface, player1:Player, player2:Player):
+    def draw(self, surface, player1, player2):
         height = pygame.display.get_surface().get_height()
         if BULLET_RADIUS <= self.y <= height and self.visible == True:
             pygame.draw.circle(surface,self.bullettype,[int(self.x + BULLET_RADIUS), int(self.y)], BULLET_RADIUS)
