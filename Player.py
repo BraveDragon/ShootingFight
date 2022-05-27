@@ -44,6 +44,7 @@ class Player:
     
     #砲台の移動+弾を撃つ
     def Move(self, key=[], ai_input = -1 , bullets=[]):
+        
         #プレイヤー操作時
         if self.isAI == False:
             #移動

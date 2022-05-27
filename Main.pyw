@@ -107,7 +107,7 @@ def update():
     #弾に当たったエイリアンを削除
     Aliens = [alien for alien in Aliens if alien.visible == True]
 
-    #弾とエイリアンの衝突判定
+    #弾とUFOの衝突判定
     for bullet in Bullets:
         for ufo in UFOs:
             if getCollision(bullet.x, ufo.x, bullet.y, ufo.y, Bullet.BULLET_RADIUS, ufo.radius) == True:
