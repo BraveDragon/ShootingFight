@@ -1,6 +1,5 @@
 #coding: "utf-8"
 import pygame
-import numpy as np
 
 #タイプごとのID
 UFO = 0 #UFO
@@ -18,7 +17,7 @@ SPEED = 5
 
 class Objects:
 
-    def __init__(self,x,y,type:int,resource,moveToRightFlag:bool):
+    def __init__(self,x,y,type:int,moveToRightFlag:bool):
         self.x = x #x座標
         self.y = y #y座標
         self.type = type #タイプ(エイリアンかUFOか)

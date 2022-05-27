@@ -25,7 +25,6 @@ Player2 = Player.Player(False,False)
 MAX_UFOs = 1
 MAX_Aliens = 2
 
-alien = Objects.Objects(150,250,Objects.ALIEN,resource,moveToRightFlag=True)
 #初期化処理
 def start():
     global screen
@@ -97,6 +96,28 @@ def update():
             if getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
     
+    #弾とエイリアンの衝突判定
+    for bullet in Bullets:
+        for alien in Aliens:
+            if getCollision(bullet.x, alien.x, bullet.y, alien.y, Bullet.BULLET_RADIUS, alien.radius) == True:
+                collisionAlien(bullet,alien,Player1,Player2)
+    
+    #エイリアンに当たった弾を削除
+    Bullets = [bullet for bullet in Bullets if bullet.visible == True]
+    #弾に当たったエイリアンを削除
+    Aliens = [alien for alien in Aliens if alien.visible == True]
+
+    #弾とエイリアンの衝突判定
+    for bullet in Bullets:
+        for ufo in UFOs:
+            if getCollision(bullet.x, ufo.x, bullet.y, ufo.y, Bullet.BULLET_RADIUS, ufo.radius) == True:
+                collisionUFO(bullet,alien,Player1,Player2)
+    
+    #UFOに当たった弾を削除
+    Bullets = [bullet for bullet in Bullets if bullet.visible == True]
+    #弾に当たったエイリアンを削除
+    UFOs = [ufo for ufo in UFOs if ufo.visible == True]
+
     #各プレイヤーの動き
     Player1.Move(key=key,bullets=Bullets)
     Player2.Move(key=key,bullets=Bullets)
@@ -110,9 +131,9 @@ def update():
         y = np.random.rand() * (Height * 0.5) + 100
         LorR = np.random.rand()
         if LorR > 0.5:
-            Aliens.append(Objects.Objects(x,y,1,resource,moveToRightFlag=True))
+            Aliens.append(Objects.Objects(x,y,Objects.ALIEN,moveToRightFlag=True))
         else:
-            Aliens.append(Objects.Objects(x,y,1,resource,moveToRightFlag=False))
+            Aliens.append(Objects.Objects(x,y,Objects.ALIEN,moveToRightFlag=False))
     #エイリアンの描画
     for alien in Aliens:
         alien.draw(screen,resource.alien)
@@ -125,14 +146,27 @@ def update():
         y = np.random.rand() * (Height * 0.5) + 100
         LorR = np.random.rand()
         if LorR > 0.5:
-            UFOs.append(Objects.Objects(x,y,0,resource,moveToRightFlag=True))
+            UFOs.append(Objects.Objects(x,y,Objects.UFO,moveToRightFlag=True))
         else:
-            UFOs.append(Objects.Objects(x,y,0,resource,moveToRightFlag=False))
+            UFOs.append(Objects.Objects(x,y,Objects.UFO,moveToRightFlag=False))
     for ufo in UFOs:
         ufo.draw(screen,resource.ufo)
     #画面外に出たUFOを削除
     UFOs = [ufo for ufo in UFOs if ufo.visible == True]
 
+    #無敵状態の処理
+    if Player1.IsInvincible == True:
+        Player1.InvincibleCount += 1
+    if Player1.IsInvincible == True and Player1.InvincibleCount >= Player.InvincibleTime:
+        Player1.IsInvincible = False
+        Player1.InvincibleCount = 0
+    
+    if Player2.IsInvincible == True:
+        Player2.InvincibleCount += 1
+    if Player2.IsInvincible == True and Player2.InvincibleCount >= Player.InvincibleTime:
+        Player2.IsInvincible = False
+        Player2.InvincibleCount = 0
+    
     #エネルギーバーの描画
     #エネルギーの残りで色を変える
     #無敵状態の時は残りエネルギーに関わらず青色になる
@@ -161,18 +195,7 @@ def update():
     if Player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(Player2.currentEnergy*0.25), 20])
     
-    #無敵状態の処理
-    if Player1.IsInvincible == True:
-        Player1.InvincibleCount += 1
-    if Player1.IsInvincible == True and Player1.InvincibleCount >= Player.InvincibleTime:
-        Player1.IsInvincible = False
-        Player1.InvincibleCount = 0
     
-    if Player2.IsInvincible == True:
-        Player2.InvincibleCount += 1
-    if Player2.IsInvincible == True and Player2.InvincibleCount >= Player.InvincibleTime:
-        Player2.IsInvincible = False
-        Player2.InvincibleCount = 0
 
     
 def Result(player1:Player.Player, key:tuple, surface):
@@ -205,14 +228,14 @@ def main():
         update()
 
 #弾の衝突判定を行う
-def getCollision(x1, x2, y1, y2, radius1, radius2):
+def getCollision(x1:float, x2:float, y1:float, y2:float, radius1:float, radius2:float):
     if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= (radius1 + radius2) ** 2:
         return True
     else:
         return False
 
 #弾の弱体化を行う
-def setWeakening(bullet1P, bullet2P):
+def setWeakening(bullet1P:Bullet.Bullet, bullet2P:Bullet.Bullet):
     b1afterlevel = bullet1P.bulletlevel - bullet2P.bulletlevel
     b2afterlevel = bullet2P.bulletlevel - bullet1P.bulletlevel
     bullet1P.bulletlevel = b1afterlevel
@@ -235,6 +258,25 @@ def setWeakening(bullet1P, bullet2P):
     else:
         bullet2P.bullettype = Bullet.BULLET_MIDDLE
     
+def collisionAlien(bullet:Bullet.Bullet, alien:Objects.Objects, player1:Player.Player, player2:Player.Player):
+    alien.visible = False
+    bullet.visible = False
+    #1Pの弾と当たった時
+    if bullet.bulletdirection == -1.0:
+        player1.numberOfBlowAliens += 1
+    #2Pの弾と当たった時
+    else:
+        player2.numberOfBlowAliens += 1
+
+def collisionUFO(bullet:Bullet.Bullet, ufo:Objects.Objects, player1:Player.Player, player2:Player.Player):
+    ufo.visible = False
+    bullet.visible = False
+    #1Pの弾と当たった時
+    if bullet.bulletdirection == -1.0:
+        player1.IsInvincible = True
+    #2Pの弾と当たった時
+    else:
+        player2.IsInvincible = True
 
 if __name__ == '__main__':
     main()
