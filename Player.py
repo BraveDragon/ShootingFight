@@ -9,11 +9,10 @@ StartEnergy = 1000
 InvincibleTime = 300 #無敵時間(1秒60フレームなので、300フレーム=5秒となる)
 class Player:
     maxEnergy = MaxEnergy
-    def __init__(self, is1P:bool, isAI:bool):
+    def __init__(self, is1P:bool):
         #1P・2P共通部分の初期化
         #yはいらないかも
         self.is1P = is1P
-        self.isAI = isAI
         self.currentEnergy = StartEnergy
         self.__x = 350
         self.bulletweak_pressed_past = 0
@@ -43,10 +42,10 @@ class Player:
         
     
     #砲台の移動+弾を撃つ
-    def Move(self, key=[], ai_input = -1 , bullets=[]):
+    def Move(self, key=[], ai_input = -1, bullets=[]):
         
         #プレイヤー操作時
-        if self.isAI == False:
+        if ai_input == -1:
             #移動
             if key[self.left] == 1:
                 self.__x -= Gunpoint_Speed
@@ -305,12 +304,15 @@ class Player:
         
         if self.InvincibleCount >= InvincibleTime:
             self.IsInvincible = False
+            self.InvincibleCount = 0
     
     #ゲーム開始時の状態に戻す
     def Reset(self):
         self.maxEnergy = MaxEnergy
         self.currentEnergy = StartEnergy
         self.__x = 350
+        self.IsInvincible = False
+        self.InvincibleCount = 0
 
         self.bulletweak_pressed_past = 0
         self.bulletmiddle_pressed_past = 0
