@@ -45,7 +45,7 @@ def start(player1:Player.Player, player2:Player.Player):
 
 
 #ゲームの処理
-def update(player1:Player.Player, player2:Player.Player, isTrain:bool=False):
+def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input:int=-1):
     #グローバル宣言
     global screen
     global resource
@@ -60,9 +60,9 @@ def update(player1:Player.Player, player2:Player.Player, isTrain:bool=False):
     key = pygame.key.get_pressed()
     #勝敗判定
     if player1.currentEnergy <= 0 or player2.currentEnergy <= 0:
-        Result(player1,player2, key, screen)
+        P1reward, P2reward = Result(player1,player2, key, screen)
         #ここでupdate()を打ち切る
-        return pygame.surfarray.array3d(pygame.display.get_surface())
+        return (pygame.surfarray.array3d(pygame.display.get_surface()),P1reward,P2reward)
     
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
@@ -113,8 +113,8 @@ def update(player1:Player.Player, player2:Player.Player, isTrain:bool=False):
     UFOs = [ufo for ufo in UFOs if ufo.visible == True]
 
     #各プレイヤーの動き
-    player1.Move(key=key,bullets=Bullets)
-    player2.Move(key=key,bullets=Bullets)
+    player1.Move(key=key,bullets=Bullets,ai_input=P1Input)
+    player2.Move(key=key,bullets=Bullets,ai_input=P2Input)
     
     #砲台(プレイヤー操作)の描画
     screen.blit(resource.player1,[player1.GetX(),player1.y])
@@ -209,13 +209,6 @@ def Result(player1:Player.Player,player2:Player.Player, key:tuple, surface):
         text = font.render("1P WIN!", True, (255, 255, 255))
         surface.blit(text,[150, 250])
         return (1, -1)
-    
-
-    
-    
-
-    
-
 
 #ゲームループ本体
 def main(player1:Player.Player, player2:Player.Player):
