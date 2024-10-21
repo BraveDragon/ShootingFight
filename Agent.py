@@ -27,10 +27,10 @@ class Agent(nn.Module):
         
 
 #弾のタイプをOne-Hot形式に変換
-def ToOneHotType(bulletlevel:int):
-    if bulletlevel == 1:
+def ToOneHotType(bulletLevel:int):
+    if bulletLevel == 1:
         return [1, 0, 0]
-    elif bulletlevel == 2:
+    elif bulletLevel == 2:
         return [0, 1, 0]
     else:
         return [0, 0, 1]

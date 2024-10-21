@@ -82,8 +82,8 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     Bullets = [bullet for bullet in Bullets if bullet.visible == True]
 
     #弾の衝突判定+弱体化
-    player1Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == player1.bulletdirection]
-    player2Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == player2.bulletdirection]
+    player1Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == player1.bulletDirection]
+    player2Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == player2.bulletDirection]
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
@@ -230,33 +230,33 @@ def getCollision(x1:float, x2:float, y1:float, y2:float, radius1:float, radius2:
 
 #弾の弱体化を行う
 def setWeakening(bullet1P:Bullet.Bullet, bullet2P:Bullet.Bullet):
-    b1afterlevel = bullet1P.bulletlevel - bullet2P.bulletlevel
-    b2afterlevel = bullet2P.bulletlevel - bullet1P.bulletlevel
-    bullet1P.bulletlevel = b1afterlevel
-    bullet2P.bulletlevel = b2afterlevel
+    b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
+    b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
+    bullet1P.bulletLevel = b1afterLevel
+    bullet2P.bulletLevel = b2afterLevel
     #1Pの弾
     #弾の弱体化+消滅
-    if bullet1P.bulletlevel <= 0:
+    if bullet1P.bulletLevel <= 0:
         bullet1P.visible = False
-    elif bullet1P.bulletlevel == 1:
-        bullet1P.bullettype = Bullet.BULLET_WEAK
+    elif bullet1P.bulletLevel == 1:
+        bullet1P.bulletType = Bullet.BULLET_WEAK
     else:
-        bullet1P.bullettype = Bullet.BULLET_MIDDLE
+        bullet1P.bulletType = Bullet.BULLET_MIDDLE
     
     #2Pの弾
     #弾の弱体化+消滅
-    if bullet2P.bulletlevel <= 0:
+    if bullet2P.bulletLevel <= 0:
         bullet2P.visible = False
-    elif bullet2P.bulletlevel == 1:
-        bullet2P.bullettype = Bullet.BULLET_WEAK
+    elif bullet2P.bulletLevel == 1:
+        bullet2P.bulletType = Bullet.BULLET_WEAK
     else:
-        bullet2P.bullettype = Bullet.BULLET_MIDDLE
+        bullet2P.bulletType = Bullet.BULLET_MIDDLE
     
 def collisionAlien(bullet:Bullet.Bullet, alien:Objects.Objects, player1:Player.Player, player2:Player.Player):
     alien.visible = False
     bullet.visible = False
     #1Pの弾と当たった時
-    if bullet.bulletdirection == -1.0:
+    if bullet.bulletDirection == -1.0:
         player1.numberOfBlowAliens += 1
     #2Pの弾と当たった時
     else:
@@ -266,7 +266,7 @@ def collisionUFO(bullet:Bullet.Bullet, ufo:Objects.Objects, player1:Player.Playe
     ufo.visible = False
     bullet.visible = False
     #1Pの弾と当たった時
-    if bullet.bulletdirection == -1.0:
+    if bullet.bulletDirection == -1.0:
         player1.IsInvincible = True
     #2Pの弾と当たった時
     else:

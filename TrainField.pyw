@@ -29,7 +29,7 @@ memsize = 10000
 batch_size = 32
 JustLooking = 10
 gamma = 0.99
-epsiron = 1.0
+epsilon = 1.0
 eps_end = 0.01
 eps_reduce_rate = 0.001
 Player1 = Player.Player(True,True)
@@ -85,20 +85,20 @@ def update():
     global Model2P
     global action1P
     global action2P
-    global loadaction1P
-    global loadaction2P
+    global loadAction1P
+    global loadAction2P
     global Target_Model1P
     global Target_Model2P
     global Bullets
 
-    global epsiron
+    global epsilon
     global eps_end
     #最大フレームレートを60fpsで固定
     clock = pygame.time.Clock()
     clock.tick(60)
     
-    if epsiron > eps_end :
-        epsiron -= eps_reduce_rate
+    if epsilon > eps_end :
+        epsilon -= eps_reduce_rate
 
 
     #キーボード入力を受け取る
@@ -129,15 +129,15 @@ def update():
     Bullets = [bullet for bullet in Bullets if bullet.visible == True]
 
     #弾の衝突判定+弱体化
-    player1Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == Player1.bulletdirection]
-    player2Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == Player2.bulletdirection]
+    player1Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == Player1.bulletDirection]
+    player2Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == Player2.bulletDirection]
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
-            if getCollition(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
+            if getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
                 setWeakening(player1Bullet, player2Bullet)
 
-    if epsiron > np.random.rand():
+    if epsilon > np.random.rand():
         raw_action1P = np.random.randint(0, Agent.Outputs)
         raw_action2P = np.random.randint(0, Agent.Outputs)
         action1P = [0] * Agent.Outputs
@@ -145,8 +145,8 @@ def update():
         action1P[raw_action1P] = 1
         action2P[raw_action2P] = 1
         #ReplayMemoryへの格納用
-        loadaction1P = raw_action1P
-        loadaction2P = raw_action2P
+        loadAction1P = raw_action1P
+        loadAction2P = raw_action2P
 
     elif Memory1P.length() > batch_size and Memory2P.length() > batch_size:
         Inputs1P = np.array(Memory1P.sample(batch_size), dtype=np.float32)
@@ -155,8 +155,8 @@ def update():
         action2P = Model2P(torch.from_numpy(Inputs2P).to(DEVICE))
         action1P = np.array(action1P.cpu().detach().numpy())
         action2P = np.array(action2P.cpu().detach().numpy())
-        loadaction1P = np.argmax(action1P)
-        loadaction2P = np.argmax(action2P)
+        loadAction1P = np.argmax(action1P)
+        loadAction2P = np.argmax(action2P)
     
     State = getState(player1Bullets, player2Bullets)
     #TODO: Reward, action, nextstateの処理
@@ -170,8 +170,8 @@ def update():
     screen.blit(resource.player2,[Player2.GetX(),Player2.y])
 
     #ReplayMemoryへ保存
-    player1Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == Player1.bulletdirection]
-    player2Bullets = [bullet for bullet in Bullets if bullet.bulletdirection == Player2.bulletdirection]
+    player1Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == Player1.bulletDirection]
+    player2Bullets = [bullet for bullet in Bullets if bullet.bulletDirection == Player2.bulletDirection]
 
     NextState = getState(player1Bullets, player2Bullets)
 
@@ -179,14 +179,14 @@ def update():
         Experience1P = []
         Experience1P.extend(State)
         Experience1P.append(float(P1reward))
-        Experience1P.append(loadaction1P)
+        Experience1P.append(loadAction1P)
         Experience1P.extend(NextState)
         Memory1P.load(Experience1P)
 
         Experience2P = []
         Experience2P.extend(State)
         Experience2P.append(float(P2Reward))
-        Experience2P.append(loadaction2P)
+        Experience2P.append(loadAction2P)
         Experience2P.extend(NextState)
         Memory2P.load(Experience2P)
     
@@ -263,7 +263,7 @@ def getState(player1Bullets, player2Bullets):
         if i < len(player1Bullets):
             x = Agent.XNormalize(player1Bullets[i].x)
             y = Agent.YNormalize(player1Bullets[i].y)
-            tpe = Agent.ToOneHotType(player1Bullets[i].bulletlevel)
+            tpe = Agent.ToOneHotType(player1Bullets[i].bulletLevel)
         else:
             x = -1
             y = -1
@@ -278,7 +278,7 @@ def getState(player1Bullets, player2Bullets):
         if i < len(player2Bullets):
             x = Agent.XNormalize(player2Bullets[i].x)
             y = Agent.YNormalize(player2Bullets[i].y)
-            tpe = Agent.ToOneHotType(player2Bullets[i].bulletlevel)
+            tpe = Agent.ToOneHotType(player2Bullets[i].bulletLevel)
         else:
             x = -1
             y = -1
@@ -337,7 +337,7 @@ def main():
     SaveModel()
 
 #弾の衝突判定を行う
-def getCollition(x1, x2, y1, y2, radius):
+def getCollision(x1, x2, y1, y2, radius):
     if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= radius ** 2:
         return True
     else:
@@ -345,27 +345,27 @@ def getCollition(x1, x2, y1, y2, radius):
 
 #弾の弱体化を行う
 def setWeakening(bullet1P, bullet2P):
-    b1afterlevel = bullet1P.bulletlevel - bullet2P.bulletlevel
-    b2afterlevel = bullet2P.bulletlevel - bullet1P.bulletlevel
-    bullet1P.bulletlevel = b1afterlevel
-    bullet2P.bulletlevel = b2afterlevel
+    b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
+    b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
+    bullet1P.bulletLevel = b1afterLevel
+    bullet2P.bulletLevel = b2afterLevel
     #1Pの弾
     #弾の弱体化+消滅
-    if bullet1P.bulletlevel <= 0:
+    if bullet1P.bulletLevel <= 0:
         bullet1P.visible = False
-    elif bullet1P.bulletlevel == 1:
-        bullet1P.bullettype = Bullet.BULLET_WEAK
+    elif bullet1P.bulletLevel == 1:
+        bullet1P.bulletType = Bullet.BULLET_WEAK
     else:
-        bullet1P.bullettype = Bullet.BULLET_MIDDLE
+        bullet1P.bulletType = Bullet.BULLET_MIDDLE
     
     #2Pの弾
     #弾の弱体化+消滅
-    if bullet2P.bulletlevel <= 0:
+    if bullet2P.bulletLevel <= 0:
         bullet2P.visible = False
-    elif bullet2P.bulletlevel == 1:
-        bullet2P.bullettype = Bullet.BULLET_WEAK
+    elif bullet2P.bulletLevel == 1:
+        bullet2P.bulletType = Bullet.BULLET_WEAK
     else:
-        bullet2P.bullettype = Bullet.BULLET_MIDDLE
+        bullet2P.bulletType = Bullet.BULLET_MIDDLE
     
 def SaveModel():
     #モデル+ReplayMemory保存処理
