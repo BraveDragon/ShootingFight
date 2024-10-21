@@ -1,7 +1,6 @@
 #coding: "utf-8"
 import pygame
 import Bullet
-import numpy as np
 
 Gunpoint_Speed = 20
 MaxEnergy = 2000
