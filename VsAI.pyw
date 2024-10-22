@@ -4,6 +4,7 @@
 import pygame
 import sys
 import Resources
+import Game
 import Player
 import Bullet
 #AI用
@@ -37,24 +38,6 @@ Model2P.train(False)
 
 with open("memory2P.pkl", "rb") as f:
     Memory2P = pickle.load(f)
-
-
-
-#初期化処理
-def start():
-    global screen
-    pygame.init()
-    pygame.display.set_caption("ShootingFight")
-    screen = pygame.display.set_mode((Width, Height))
-    global resource
-    resource = Resources.Resources()
-    global Player1
-    global Player2
-    global Bullets
-    Bullets = []
-    Player1.Reset()
-    Player2.Reset()
-    
 
 
 #ゲームの処理
@@ -106,8 +89,8 @@ def update():
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
-            if getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
-                setWeakening(player1Bullet, player2Bullet)
+            if Game.getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
+                Game.setWeakening(player1Bullet, player2Bullet)
 
     Inputs2P = np.array(Memory2P.sample(batch_size), dtype=np.float32)
     action2P = Model2P(torch.from_numpy(Inputs2P).to(DEVICE))
@@ -182,7 +165,7 @@ def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
         surface.blit(text,[150, 250])
     
     if key[pygame.K_SPACE]:
-        start()
+        Game.start()
 
     return ret_reward
 
@@ -237,7 +220,7 @@ def getState(player1Bullets, player2Bullets):
 
 #ゲームループ本体
 def main():
-    start()
+    Game.start()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -245,17 +228,6 @@ def main():
                 sys.exit()
         pygame.display.update()
         update()
-    
-
-#弾の衝突判定を行う
-def getCollision(x1, x2, y1, y2, radius):
-    if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= radius ** 2:
-        return True
-    else:
-        return False
-
-#弾の弱体化を行う
-def setWeakening(bullet1P, bullet2P):
     b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
     b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
     bullet1P.bulletLevel = b1afterLevel

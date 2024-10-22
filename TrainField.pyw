@@ -3,6 +3,7 @@
 #ゲーム本体用
 import pygame
 import sys
+import Game
 import Resources
 import Player
 import Bullet
@@ -53,26 +54,6 @@ optimizer2P = optim.Adam(Model2P.parameters(),lr=0.001,weight_decay=0.005)
 
 current_episode = 0
 max_episode = 10000
-
-
-
-
-#初期化処理
-def start():
-    global screen
-    pygame.init()
-    pygame.display.set_caption("ShootingFight")
-    screen = pygame.display.set_mode((Width, Height))
-    global resource
-    resource = Resources.Resources()
-    global Player1
-    global Player2
-    global Bullets
-    Bullets = []
-    Player1.Reset()
-    Player2.Reset()
-    
-
 
 #ゲームの処理
 def update():
@@ -134,8 +115,8 @@ def update():
 
     for player1Bullet in player1Bullets:
         for player2Bullet in player2Bullets:
-            if getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
-                setWeakening(player1Bullet, player2Bullet)
+            if Game.getCollision(player1Bullet.x, player2Bullet.x, player1Bullet.y, player2Bullet.y, Bullet.BULLET_RADIUS) == True:
+                Game.setWeakening(player1Bullet, player2Bullet)
 
     if epsilon > np.random.rand():
         raw_action1P = np.random.randint(0, Agent.Outputs)
@@ -248,7 +229,7 @@ def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
         ret_reward = [-1, 1]
         pass
     
-    start()
+    Game.start(player1, player2)
     return ret_reward
 
 def getState(player1Bullets, player2Bullets):
@@ -302,7 +283,7 @@ def getState(player1Bullets, player2Bullets):
 
 #ゲームループ本体
 def main():
-    start()
+    Game.start()
     #楽観的初期化を行う
     global Target_Model1P
     global Target_Model2P
@@ -336,37 +317,6 @@ def main():
     
     SaveModel()
 
-#弾の衝突判定を行う
-def getCollision(x1, x2, y1, y2, radius):
-    if (x1 - x2) ** 2 + (y1 - y2) ** 2 <= radius ** 2:
-        return True
-    else:
-        return False
-
-#弾の弱体化を行う
-def setWeakening(bullet1P, bullet2P):
-    b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
-    b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
-    bullet1P.bulletLevel = b1afterLevel
-    bullet2P.bulletLevel = b2afterLevel
-    #1Pの弾
-    #弾の弱体化+消滅
-    if bullet1P.bulletLevel <= 0:
-        bullet1P.visible = False
-    elif bullet1P.bulletLevel == 1:
-        bullet1P.bulletType = Bullet.BULLET_WEAK
-    else:
-        bullet1P.bulletType = Bullet.BULLET_MIDDLE
-    
-    #2Pの弾
-    #弾の弱体化+消滅
-    if bullet2P.bulletLevel <= 0:
-        bullet2P.visible = False
-    elif bullet2P.bulletLevel == 1:
-        bullet2P.bulletType = Bullet.BULLET_WEAK
-    else:
-        bullet2P.bulletType = Bullet.BULLET_MIDDLE
-    
 def SaveModel():
     #モデル+ReplayMemory保存処理
     torch.save(Model1P.state_dict(),"Model1P.pth")
