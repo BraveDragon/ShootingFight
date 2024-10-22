@@ -17,7 +17,7 @@ SPEED = 5
 
 class Objects:
 
-    def __init__(self,x,y,type:int,moveToRightFlag:bool):
+    def __init__(self, x : float, y : float, type:int, moveToRightFlag:bool):
         self.x = x #x座標
         self.y = y #y座標
         self.type = type #タイプ(エイリアンかUFOか)

@@ -5,7 +5,7 @@ import pygame
 import sys
 import Game
 import Player
-import Bullet
+from Bullet import Bullet
 #AI用
 import Agent
 import torch
@@ -226,7 +226,6 @@ def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
     #2P敗北時
     else:
         ret_reward = [-1, 1]
-        pass
     
     Game.start(player1, player2)
     return ret_reward

@@ -1,6 +1,6 @@
 #coding: "utf-8"
 import pygame
-import Bullet
+from Bullet import Bullet
 
 Gunpoint_Speed = 20
 MaxEnergy = 2000
@@ -41,7 +41,7 @@ class Player:
         
     
     #砲台の移動+弾を撃つ
-    def Move(self, key=[], ai_input : int = -1, bullets=[]):
+    def Move(self, key=[], ai_input : int = -1, bullets : list[Bullet] = []):
         
         #プレイヤー操作時
         if ai_input == -1:
@@ -60,19 +60,19 @@ class Player:
             bulletWeak_pressed_now = key[self.bulletWeak]
             if bulletWeak_pressed_now == 1 and self.bulletWeak_pressed_past != 1:
                 self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
             self.bulletWeak_pressed_past = bulletWeak_pressed_now
             #威力中の弾
             bulletMiddle_pressed_now = key[self.bulletMiddle]
             if bulletMiddle_pressed_now == 1 and self.bulletMiddle_pressed_past != 1:
                 self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             self.bulletMiddle_pressed_past = bulletMiddle_pressed_now
             #威力大の弾
             bulletStrong_pressed_now = key[self.bulletStrong]
             if bulletStrong_pressed_now == 1 and self.bulletStrong_pressed_past != 1:
                 self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_STRONG, self.bulletDirection))
             self.bulletStrong_pressed_past = bulletStrong_pressed_now
         #AI操作時
         else:
@@ -92,7 +92,7 @@ class Player:
             if ai_input == 2 and self.bulletWeak_pressed_past != 1:
                 #威力小の弾発射
                 self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 0
@@ -100,7 +100,7 @@ class Player:
             if ai_input == 3 and self.bulletMiddle_pressed_past != 1:
                 #威力中の弾発射
                 self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
@@ -108,7 +108,7 @@ class Player:
             if ai_input == 4 and self.bulletStrong_pressed_past != 1:
                 #威力大の弾発射
                 self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
@@ -118,7 +118,7 @@ class Player:
                 #左移動+威力小の弾発射
                 self.__x -= Gunpoint_Speed
                 self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 0
@@ -126,7 +126,7 @@ class Player:
                 #左移動+威力中の弾発射
                 self.__x -= Gunpoint_Speed
                 self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
@@ -135,7 +135,7 @@ class Player:
                 #左移動+威力大の弾発射
                 self.__x -= Gunpoint_Speed
                 self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
@@ -144,7 +144,7 @@ class Player:
                 #右移動+威力小の弾発射
                 self.__x += Gunpoint_Speed 
                 self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 0
@@ -153,7 +153,7 @@ class Player:
                 #右移動+威力中の弾発射
                 self.__x += Gunpoint_Speed
                 self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
@@ -162,7 +162,7 @@ class Player:
                 #右移動+威力大の弾発射
                 self.__x += Gunpoint_Speed 
                 self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
@@ -174,8 +174,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             
             if ai_input == 12 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #小+大
@@ -183,8 +183,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
 
             if ai_input == 13 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #中+大
@@ -192,8 +192,8 @@ class Player:
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             #移動しながら2種類の弾を発射
             if ai_input == 14 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1:
@@ -203,8 +203,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             
             if ai_input == 15 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #左移動+小+大
@@ -213,8 +213,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
 
             if ai_input == 16 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #左移動+中+大
@@ -223,8 +223,8 @@ class Player:
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             if ai_input == 17 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1:
                 #右移動+小+中
@@ -233,8 +233,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             
             if ai_input == 18 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #右移動+小+大
@@ -243,8 +243,8 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
 
             if ai_input == 19 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #右移動+中+大
@@ -253,8 +253,8 @@ class Player:
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             #全発射
             if ai_input == 20 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
@@ -262,9 +262,9 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
                 
             if ai_input == 21 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #左移動+弾全発射
@@ -273,9 +273,9 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             if ai_input == 22 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
                 #右移動+弾全発射
@@ -284,9 +284,9 @@ class Player:
                 self.bulletWeak_pressed_past = 1
                 self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                bullets.append(Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
         
         #行き過ぎの抑制

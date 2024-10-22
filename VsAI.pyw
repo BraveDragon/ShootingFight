@@ -5,16 +5,17 @@ import pygame
 import sys
 import Game
 import Player
-import Bullet
+from Bullet import Bullet
+import Resources
 #AI用
 import Agent
 import torch
 import numpy as np
 import pickle
 
-Bullets = []
-resource = None
-screen = None
+Bullets : list[Bullet] = []
+resource : Resources.Resources = None
+screen : pygame.Surface = None
 clock = None
 Player1 = None
 Player2 = None
@@ -144,7 +145,7 @@ def update():
     if Player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, Player2.currentEnergy*0.25, 20])
     
-def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
+def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface: pygame.Surface):
     #結果を反映
     global current_episode
     current_episode += 1
@@ -167,7 +168,7 @@ def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface):
 
     return ret_reward
 
-def getState(player1Bullets, player2Bullets):
+def getState(player1Bullets : list[Bullet], player2Bullets : list[Bullet]):
     #状態の取得
     P1x = Agent.XNormalize(Player1.GetX())
     P2x = Agent.XNormalize(Player2.GetX())
@@ -226,28 +227,6 @@ def main():
                 sys.exit()
         pygame.display.update()
         update()
-    b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
-    b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
-    bullet1P.bulletLevel = b1afterLevel
-    bullet2P.bulletLevel = b2afterLevel
-    #1Pの弾
-    #弾の弱体化+消滅
-    if bullet1P.bulletLevel <= 0:
-        bullet1P.visible = False
-    elif bullet1P.bulletLevel == 1:
-        bullet1P.bulletType = Bullet.BULLET_WEAK
-    else:
-        bullet1P.bulletType = Bullet.BULLET_MIDDLE
-    
-    #2Pの弾
-    #弾の弱体化+消滅
-    if bullet2P.bulletLevel <= 0:
-        bullet2P.visible = False
-    elif bullet2P.bulletLevel == 1:
-        bullet2P.bulletType = Bullet.BULLET_WEAK
-    else:
-        bullet2P.bulletType = Bullet.BULLET_MIDDLE
-    
 
 if __name__ == '__main__':
     main()
