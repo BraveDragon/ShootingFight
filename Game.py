@@ -3,7 +3,7 @@
 import pygame
 import sys
 import Objects
-import Resources
+from Resources import Resources
 from Bullet import Bullet
 import Player
 import numpy as np
@@ -12,13 +12,12 @@ import numpy as np
 Bullets : list[Bullet] = []
 UFOs : list[Objects.Objects] = []
 Aliens: list[Objects.Objects] = []
-resource : Resources.Resources = None
+resource : Resources = None
 screen : pygame.Surface = None
 clock : pygame.time.Clock = None
 
 Width = 800
 Height = 600
-Gunpoint_Speed = 0.6
 
 MAX_UFOs = 1
 MAX_Aliens = 2
@@ -31,7 +30,7 @@ def start(player1:Player.Player, player2:Player.Player):
     screen = pygame.display.set_mode((Width, Height))
     
     global resource
-    resource = Resources.Resources()
+    resource = Resources()
     global Bullets
     global UFOs
     global Aliens

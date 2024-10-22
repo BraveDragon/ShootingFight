@@ -24,7 +24,7 @@ Player2 = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Width = 800
 Height = 600
-Gunpoint_Speed = 0.6
+
 memsize = 10000
 batch_size = 32
 JustLooking = 10

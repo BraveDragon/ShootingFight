@@ -6,7 +6,7 @@ import sys
 import Game
 import Player
 from Bullet import Bullet
-import Resources
+from Resources import Resources
 #AI用
 import Agent
 import torch
@@ -14,7 +14,7 @@ import numpy as np
 import pickle
 
 Bullets : list[Bullet] = []
-resource : Resources.Resources = None
+resource : Resources = None
 screen : pygame.Surface = None
 clock = None
 Player1 = None
@@ -22,7 +22,7 @@ Player2 = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 Width = 800
 Height = 600
-Gunpoint_Speed = 0.6
+
 memsize = 10000
 batch_size = 32
 JustLooking = 10
