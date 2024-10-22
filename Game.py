@@ -27,7 +27,7 @@ def start(player1:Player.Player, player2:Player.Player):
     global screen
     pygame.init()
     pygame.display.set_caption("ShootingFight")
-    screen = pygame.display.set_mode((Width, Height))
+    screen = pygame.display.set_mode((Width, Height), pygame.DOUBLEBUF)
     
     global resource
     resource = Resources()
@@ -44,7 +44,7 @@ def start(player1:Player.Player, player2:Player.Player):
 
 
 #ゲームの処理
-def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input:int=-1):
+def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input:int=-1) -> tuple[np.ndarray, bool, int, int]:
     #グローバル宣言
     global screen
     global resource
@@ -61,7 +61,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     if player1.currentEnergy <= 0 or player2.currentEnergy <= 0:
         P1reward, P2reward = Result(player1,player2, key, screen)
         #ここでupdate()を打ち切る
-        return (pygame.surfarray.array2d(pygame.display.get_surface()),P1reward,P2reward)
+        return (pygame.surfarray.array2d(pygame.display.get_surface()), True, P1reward, P2reward)
     
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
@@ -188,7 +188,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     if player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(player2.currentEnergy*0.25), 20])
     
-    return (pygame.surfarray.array2d(pygame.display.get_surface()), 0, 0)
+    return (pygame.surfarray.array2d(pygame.display.get_surface()), False, 0, 0)
     
     
 
