@@ -159,7 +159,7 @@ def update():
         loadAction2P = np.argmax(action2P)
     
     State = getState(player1Bullets, player2Bullets)
-    #TODO: Reward, action, nextstateの処理
+    #TODO: Reward, action, nextStateの処理
 
     #各プレイヤーの動き
     Player1.Move(bullets=Bullets,ai_input=action1P)
