@@ -5,7 +5,7 @@ import pygame
 import sys
 import Game
 import Player
-from Bullet import Bullet
+import Bullet
 #AI用
 import Agent
 import torch
@@ -73,6 +73,7 @@ def update():
 
     global epsilon
     global eps_end
+    global current_episode
     #最大フレームレートを60fpsで固定
     clock = pygame.time.Clock()
     clock.tick(60)
@@ -85,7 +86,8 @@ def update():
     key = pygame.key.get_pressed()
     #勝敗判定
     if Player1.currentEnergy <= 0 or Player2.currentEnergy <= 0:
-       P1reward, P2Reward = Result(Player1, Player2, key, screen)
+       P1reward, P2Reward = Game.Result(Player1, Player2, key, screen)
+       current_episode += 1
        #ここでupdate()を打ち切る
        return
     else:

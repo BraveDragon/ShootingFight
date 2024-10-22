@@ -5,7 +5,7 @@ import pygame
 import sys
 import Game
 import Player
-from Bullet import Bullet
+import Bullet
 from Resources import Resources
 #AI用
 import Agent
@@ -13,7 +13,7 @@ import torch
 import numpy as np
 import pickle
 
-Bullets : list[Bullet] = []
+Bullets : list[Bullet.Bullet] = []
 resource : Resources = None
 screen : pygame.Surface = None
 clock = None
@@ -168,7 +168,7 @@ def Result(player1:Player.Player, player2:Player.Player, key:tuple, surface: pyg
 
     return ret_reward
 
-def getState(player1Bullets : list[Bullet], player2Bullets : list[Bullet]):
+def getState(player1Bullets : list[Bullet.Bullet], player2Bullets : list[Bullet.Bullet]):
     #状態の取得
     P1x = Agent.XNormalize(Player1.GetX())
     P2x = Agent.XNormalize(Player2.GetX())

@@ -4,12 +4,12 @@ import pygame
 import sys
 import Objects
 from Resources import Resources
-from Bullet import Bullet
+import Bullet
 import Player
 import numpy as np
 
 
-Bullets : list[Bullet] = []
+Bullets : list[Bullet.Bullet] = []
 UFOs : list[Objects.Objects] = []
 Aliens: list[Objects.Objects] = []
 resource : Resources = None
@@ -61,7 +61,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     if player1.currentEnergy <= 0 or player2.currentEnergy <= 0:
         P1reward, P2reward = Result(player1,player2, key, screen)
         #ここでupdate()を打ち切る
-        return (pygame.surfarray.array3d(pygame.display.get_surface()),P1reward,P2reward)
+        return (pygame.surfarray.array2d(pygame.display.get_surface()),P1reward,P2reward)
     
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
@@ -188,7 +188,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     if player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(player2.currentEnergy*0.25), 20])
     
-    return (pygame.surfarray.array3d(pygame.display.get_surface()), 0, 0)
+    return (pygame.surfarray.array2d(pygame.display.get_surface()), 0, 0)
     
     
 
@@ -271,6 +271,3 @@ def collisionUFO(bullet:Bullet, ufo:Objects.Objects, player1:Player.Player, play
     #2Pの弾と当たった時
     else:
         player2.IsInvincible = True
-
-if __name__ == '__main__':
-    main(Player.Player(True), Player.Player(False))
