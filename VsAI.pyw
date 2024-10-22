@@ -3,7 +3,6 @@
 #ゲーム本体用
 import pygame
 import sys
-import Resources
 import Game
 import Player
 import Bullet
@@ -11,7 +10,6 @@ import Bullet
 import Agent
 import torch
 import numpy as np
-import Memory
 import pickle
 
 Bullets = []

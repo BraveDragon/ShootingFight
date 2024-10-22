@@ -4,7 +4,6 @@
 import pygame
 import sys
 import Game
-import Resources
 import Player
 import Bullet
 #AI用
