@@ -180,8 +180,11 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     
     if player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(player2.currentEnergy*0.25), 20])
-    
-    return (pygame.surfarray.array2d(pygame.display.get_surface()), False, 0, 0)
+    gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
+    g_min = gameWindow.min(axis=None, keepdims=True)
+    g_max = gameWindow.max(axis=None, keepdims=True)
+    gameWindow = (gameWindow - g_min) / (g_max - g_min)
+    return (gameWindow, False, 0, 0)
     
     
 
