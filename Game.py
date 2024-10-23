@@ -57,7 +57,11 @@ def update(player1:Player.Player,
     if player1.currentEnergy <= 0 or player2.currentEnergy <= 0:
         P1reward, P2reward = Result(player1,player2, key, screen)
         #ここでupdate()を打ち切る
-        return (pygame.surfarray.array2d(pygame.display.get_surface()), True, P1reward, P2reward)
+        gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
+        g_min = gameWindow.min(axis=None, keepdims=True)
+        g_max = gameWindow.max(axis=None, keepdims=True)
+        gameWindow = (gameWindow - g_min) / (g_max - g_min)
+        return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), True, P1reward, P2reward)
     
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
