@@ -13,7 +13,7 @@ ALIEN_WIDTH = 100
 ALIEN_HEIGHT = 100
 ALIEN_RADIUS = 50
 
-SPEED = 5
+SPEED = 10
 
 class Objects:
 

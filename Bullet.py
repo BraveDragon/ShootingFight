@@ -1,7 +1,7 @@
 #coding: "utf-8"
 import pygame
 
-BULLET_SPEED = 10
+BULLET_SPEED = 20
 #色を定義。弾に使用する
 BULLET_STRONG = (255, 0, 0) #威力強の弾
 BULLET_MIDDLE = (0, 255, 0) #威力中の弾
@@ -18,7 +18,7 @@ AttackBonus = 10 #エイリアンを1体倒すごとに得られる攻撃力ボ�
 
 class Bullet:
     
-    def __init__(self, x, y, bulletType, bulletDirection):
+    def __init__(self, x : float, y : float, bulletType : tuple[int, int,int], bulletDirection : float):
         self.x = x
         self.y = y
         self.bulletType = bulletType
@@ -28,11 +28,11 @@ class Bullet:
         #弾の強さ
         #弱：1, 中：2, 強：3
         if self.bulletType == BULLET_WEAK:
-            self.bulletLevel = 1
+            self.bulletLevel : int = 1
         elif self.bulletType == BULLET_MIDDLE:
-            self.bulletLevel = 2
+            self.bulletLevel : int = 2
         else:
-            self.bulletLevel = 3
+            self.bulletLevel : int = 3
 
     def draw(self, surface, player1, player2):
         height = pygame.display.get_surface().get_height()

@@ -46,7 +46,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     global Aliens
     #最大フレームレートを60fpsで固定
     clock = pygame.time.Clock()
-    clock.tick(60)
+    clock.tick(30)
 
     #キーボード入力を受け取る
     key = pygame.key.get_pressed()
@@ -60,10 +60,10 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     screen.fill((0,0,0,0))
     
     if player1.currentEnergy < Player.Player.maxEnergy:
-        player1.currentEnergy += 5
+        player1.currentEnergy += 10
     
     if player2.currentEnergy < Player.Player.maxEnergy:
-        player2.currentEnergy += 5
+        player2.currentEnergy += 10
     
 
     #弾の描画
