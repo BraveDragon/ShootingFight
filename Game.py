@@ -47,7 +47,7 @@ def update(player1:Player.Player,
     global Bullets
     global UFOs
     global Aliens
-    #最大フレームレートを60fpsで固定
+    #最大フレームレートを30fpsで固定
     clock = pygame.time.Clock()
     clock.tick(30)
 
