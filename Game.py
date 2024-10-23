@@ -8,29 +8,22 @@ import Bullet
 import Player
 import numpy as np
 
-
+MAX_UFOs = 1
+MAX_Aliens = 2
 Bullets : list[Bullet.Bullet] = []
 UFOs : list[Objects.Objects] = []
 Aliens: list[Objects.Objects] = []
-resource : Resources = None
-screen : pygame.Surface = None
-clock : pygame.time.Clock = None
-
 Width = 800
 Height = 600
 
-MAX_UFOs = 1
-MAX_Aliens = 2
+pygame.init()
+pygame.display.set_caption("ShootingFight")
+screen = pygame.display.set_mode((Width, Height), pygame.DOUBLEBUF)
+resource : Resources = Resources()
+clock : pygame.time.Clock = None
 
 #初期化処理
 def start(player1:Player.Player, player2:Player.Player):
-    global screen
-    pygame.init()
-    pygame.display.set_caption("ShootingFight")
-    screen = pygame.display.set_mode((Width, Height), pygame.DOUBLEBUF)
-    
-    global resource
-    resource = Resources()
     global Bullets
     global UFOs
     global Aliens
