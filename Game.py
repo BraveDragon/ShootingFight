@@ -184,7 +184,7 @@ def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input
     g_min = gameWindow.min(axis=None, keepdims=True)
     g_max = gameWindow.max(axis=None, keepdims=True)
     gameWindow = (gameWindow - g_min) / (g_max - g_min)
-    return (gameWindow, False, 0, 0)
+    return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), False, 0, 0)
     
     
 
