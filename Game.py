@@ -33,8 +33,6 @@ def start(player1:Player.Player, player2:Player.Player):
     Aliens = []
     player1.Reset()
     player2.Reset()
-    
-
 
 #ゲームの処理
 def update(player1:Player.Player,
@@ -55,13 +53,9 @@ def update(player1:Player.Player,
     key = pygame.key.get_pressed()
     #勝敗判定
     if player1.currentEnergy <= 0 or player2.currentEnergy <= 0:
-        P1reward, P2reward = Result(player1,player2, key, screen)
+        Result(player1,player2, key, screen)
         #ここでupdate()を打ち切る
-        gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
-        g_min = gameWindow.min(axis=None, keepdims=True)
-        g_max = gameWindow.max(axis=None, keepdims=True)
-        gameWindow = (gameWindow - g_min) / (g_max - g_min)
-        return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), True, P1reward, P2reward)
+        return getObservation(player1, player2)
     
     #画面を黒く塗りつぶす
     screen.fill((0,0,0,0))
@@ -104,7 +98,7 @@ def update(player1:Player.Player,
     for bullet in Bullets:
         for ufo in UFOs:
             if getCollision(bullet.x, ufo.x, bullet.y, ufo.y, Bullet.BULLET_RADIUS, ufo.radius) == True:
-                collisionUFO(bullet,alien,player1,player2)
+                collisionUFO(bullet,ufo,player1,player2)
     
     #UFOに当たった弾を削除
     Bullets = [bullet for bullet in Bullets if bullet.visible == True]
@@ -191,27 +185,21 @@ def update(player1:Player.Player,
     g_min = gameWindow.min(axis=None, keepdims=True)
     g_max = gameWindow.max(axis=None, keepdims=True)
     gameWindow = (gameWindow - g_min) / (g_max - g_min)
-    return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), False, 0, 0)
-    
-    
+    return getObservation(player1, player2)
 
-    
 def Result(player1:Player.Player,player2:Player.Player, key:tuple, surface: pygame.Surface) -> tuple[int, int]:
     #結果の文字表示
     font = pygame.font.Font(None, 200)
     if key[pygame.K_SPACE]:
         start(player1, player2)
-        return (0, 0)
     #1P敗北時
     if player1.currentEnergy <= 0:
         text = font.render("2P WIN!", True, (255, 255, 255))
         surface.blit(text,[150, 250])
-        return (-1, 1)
     #2P敗北時
     else:
         text = font.render("1P WIN!", True, (255, 255, 255))
         surface.blit(text,[150, 250])
-        return (1, -1)
 
 #ゲームループ本体
 def main(player1:Player.Player, player2:Player.Player):
@@ -232,7 +220,7 @@ def getCollision(x1:float, x2:float, y1:float, y2:float, radius1:float, radius2:
         return False
 
 #弾の弱体化を行う
-def setWeakening(bullet1P:Bullet, bullet2P:Bullet):
+def setWeakening(bullet1P:Bullet.Bullet, bullet2P:Bullet.Bullet):
     b1afterLevel = bullet1P.bulletLevel - bullet2P.bulletLevel
     b2afterLevel = bullet2P.bulletLevel - bullet1P.bulletLevel
     bullet1P.bulletLevel = b1afterLevel
@@ -274,3 +262,21 @@ def collisionUFO(bullet:Bullet.Bullet, ufo:Objects.Objects, player1:Player.Playe
     #2Pの弾と当たった時
     else:
         player2.IsInvincible = True
+
+def getReward(p1energy : int, p2energy: int) -> tuple[int, int]:
+    if p1energy <= 0:
+        return (-1, 1)
+    elif p2energy <= 0:
+        return (1, -1)
+    else:
+        return (0, 0)
+
+def getObservation(player1:Player.Player, player2: Player.Player) -> tuple[tuple[np.ndarray, int, int], bool, int, int]:
+    gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
+    g_min = gameWindow.min(axis=None, keepdims=True)
+    g_max = gameWindow.max(axis=None, keepdims=True)
+    gameWindow = (gameWindow - g_min) / (g_max - g_min)
+    P1reward, P2reward = getReward(player1.currentEnergy, player2.currentEnergy)
+    finishedFlag = False if P1reward == 0 and P2reward == 0 else True
+    return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), finishedFlag, P1reward, P2reward)
+    
