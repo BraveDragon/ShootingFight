@@ -5,7 +5,7 @@ import Bullet
 Gunpoint_Speed = 40
 MaxEnergy = 2000
 StartEnergy = 1000
-InvincibleTime = 300 #無敵時間(1秒60フレームなので、300フレーム=5秒となる)
+InvincibleTime = 150 #無敵時間(1秒30フレームなので、150フレーム=5秒となる)
 class Player:
     maxEnergy = MaxEnergy
     def __init__(self, is1P:bool):
