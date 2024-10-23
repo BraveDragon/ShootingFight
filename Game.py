@@ -37,7 +37,10 @@ def start(player1:Player.Player, player2:Player.Player):
 
 
 #ゲームの処理
-def update(player1:Player.Player, player2:Player.Player, P1Input:int=-1, P2Input:int=-1) -> tuple[np.ndarray, bool, int, int]:
+def update(player1:Player.Player,
+           player2:Player.Player,
+           P1Input:int=-1,
+           P2Input:int=-1) -> tuple[tuple[np.ndarray, int, int], bool, int, int]:
     #グローバル宣言
     global screen
     global resource
@@ -248,7 +251,7 @@ def setWeakening(bullet1P:Bullet, bullet2P:Bullet):
     else:
         bullet2P.bulletType = Bullet.BULLET_MIDDLE
     
-def collisionAlien(bullet:Bullet, alien:Objects.Objects, player1:Player.Player, player2:Player.Player):
+def collisionAlien(bullet:Bullet.Bullet, alien:Objects.Objects, player1:Player.Player, player2:Player.Player):
     alien.visible = False
     bullet.visible = False
     #1Pの弾と当たった時
@@ -258,7 +261,7 @@ def collisionAlien(bullet:Bullet, alien:Objects.Objects, player1:Player.Player, 
     else:
         player2.numberOfBlowAliens += 1
 
-def collisionUFO(bullet:Bullet, ufo:Objects.Objects, player1:Player.Player, player2:Player.Player):
+def collisionUFO(bullet:Bullet.Bullet, ufo:Objects.Objects, player1:Player.Player, player2:Player.Player):
     ufo.visible = False
     bullet.visible = False
     #1Pの弾と当たった時
