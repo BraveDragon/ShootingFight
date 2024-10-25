@@ -11,7 +11,6 @@ import torch.optim as optim
 import torch.nn as nn
 import cv2
 import Memory
-import pickle
 import numpy as np
 
 Bullets = []
@@ -103,19 +102,19 @@ def main():
         
         action1P = -1
         action2P = -1
-        state, finishedFlag, p1reward, p2reward = Game.getObservation(Player1, Player2)
-        gameWindow, p1Invincible, p2Invincible = state
+        State, finishedFlag, p1reward, p2reward = Game.getObservation(Player1, Player2)
+        gameWindow, p1Invincible, p2Invincible = State
         scale = 0.125
         gameWindow = cv2.resize(gameWindow, fx=scale, fy=scale, dsize=None)
         p1Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p1Invincible)
         p2Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p2Invincible)
-        state = torch.Tensor((gameWindow, p1Invincible, p2Invincible)).to(DEVICE)
+        State = torch.Tensor((gameWindow, p1Invincible, p2Invincible)).to(DEVICE)
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
         else:
-            action1P = Model1P(state)
-            action2P = Model2P(state)
+            action1P = Model1P(State)
+            action2P = Model2P(State)
             action1P = np.array(action1P.cpu().detach().numpy()).argmax()
             action2P = np.array(action2P.cpu().detach().numpy()).argmax()
         
@@ -127,7 +126,7 @@ def main():
             current_episode += 1
             Game.start(Player1, Player2)
         else:
-            state = NextState
+            State = NextState
     
     SaveModel()
 
@@ -135,12 +134,6 @@ def SaveModel():
     #モデル+ReplayMemory保存処理
     torch.save(Model1P.state_dict(),"Model1P.pth")
     torch.save(Model2P.state_dict(),"Model2P.pth")
-
-    with open("memory1P.pkl", "wb") as memory:
-        pickle.dump(Memory1P, memory)
-
-    with open("memory2P.pkl", "wb") as memory:
-        pickle.dump(Memory2P, memory)
 
 if __name__ == '__main__':
     main()
