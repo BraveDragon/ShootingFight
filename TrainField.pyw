@@ -144,6 +144,7 @@ def main():
             if step > JustLooking:
                 Memory1P.append((State, action1P, p1reward, NextState))
                 Memory2P.append((State, action2P, p2reward, NextState))
+            step = 0
             Game.start(Player1, Player2)
         else:
             State = NextState
