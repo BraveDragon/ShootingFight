@@ -19,6 +19,7 @@ Height = 600
 pygame.init()
 pygame.display.set_caption("ShootingFight")
 screen = pygame.display.set_mode((Width, Height), pygame.DOUBLEBUF)
+pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
 resource : Resources = Resources()
 clock : pygame.time.Clock = None
 

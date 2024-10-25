@@ -45,17 +45,6 @@ optimizer2P = optim.Adam(Model2P.parameters(),lr=0.001,weight_decay=0.005)
 
 max_episode = 10000
 
-#ゲームの処理
-# def update():
-#     #グローバル宣言
-#     global Player1
-#     global Player2
-#     global Model1P
-#     global Model2P
-#     global Target_Model1P
-#     global Target_Model2P
-#     global Bullets
-
 #     if current_episode > JustLooking:
 #         Experience1P = []
 #         Experience1P.extend(State)
@@ -93,7 +82,6 @@ max_episode = 10000
 #ゲームループ本体
 def main():
     Game.start(Player1, Player2)
-    #楽観的初期化を行う
     global Target_Model1P
     global Target_Model2P
     global optimizer1P
@@ -102,22 +90,6 @@ def main():
     eps_end = 0.01
     eps_reduce_rate = 0.001
     current_episode = 0
-    #何回か楽観的初期化を回す
-    IsNeeded_retain = True
-    # for _ in range(10):
-    #     x1 = Target_Model1P(torch.ones(Agent.Inputs).to(DEVICE))
-    #     x2 = Target_Model2P(torch.ones(Agent.Inputs).to(DEVICE))
-    #     out1P = torch.ones(Agent.Outputs).to(DEVICE)
-    #     out2P = torch.ones(Agent.Outputs).to(DEVICE)
-    #     loss1P = criterion1P(out1P,x1)
-    #     loss2P = criterion2P(out2P,x2)
-    #     optimizer1P.zero_grad()
-    #     optimizer2P.zero_grad()
-    #     loss1P.backward(retain_graph=IsNeeded_retain)
-    #     loss2P.backward(retain_graph=IsNeeded_retain)
-    #     IsNeeded_retain = False
-    #     optimizer1P.step()
-    #     optimizer2P.step()
     
     while current_episode < max_episode:
         for event in pygame.event.get():
@@ -147,13 +119,15 @@ def main():
             action1P = np.array(action1P.cpu().detach().numpy()).argmax()
             action2P = np.array(action2P.cpu().detach().numpy()).argmax()
         
-        state, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
-        gameWindow, p1Invincible, p2Invincible = state
+        NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
+        gameWindow, p1Invincible, p2Invincible = NextState
         
         
         if finishedFlag == True:
             current_episode += 1
             Game.start(Player1, Player2)
+        else:
+            state = NextState
     
     SaveModel()
 
