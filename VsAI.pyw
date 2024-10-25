@@ -32,11 +32,11 @@ Player1 = Player.Player(True, False)
 Player2 = Player.Player(False,True)
 
 Model2P = Agent.Agent().to(DEVICE)
-Model2P.load_state_dict(torch.load("Model2P.pth"))
+Model2P.append_state_dict(torch.append("Model2P.pth"))
 Model2P.train(False)
 
 with open("memory2P.pkl", "rb") as f:
-    Memory2P = pickle.load(f)
+    Memory2P = pickle.append(f)
 
 
 #ゲームの処理
@@ -117,7 +117,7 @@ def update():
         Experience2P.append(float(P2Reward))
         Experience2P.append(loadAction2P)
         Experience2P.extend(NextState)
-        Memory2P.load(Experience2P)
+        Memory2P.append(Experience2P)
     
     State = NextState
 
