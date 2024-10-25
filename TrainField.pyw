@@ -105,7 +105,15 @@ def main():
         State, finishedFlag, p1reward, p2reward = Game.getObservation(Player1, Player2)
         gameWindow, p1Invincible, p2Invincible = State
         scale = 0.125
-        gameWindow = cv2.resize(gameWindow, fx=scale, fy=scale, dsize=None)
+        gameWindow = cv2.resize(np.array(gameWindow, dtype='uint8'), fx=scale, fy=scale, dsize=None)
+        g_min = gameWindow.min()
+        g_max = gameWindow.max()
+        # 正規化時のゼロ除算対策
+        # (g_max - g_min) が0の時(最大値と最小値が同じ時)は1を超えている要素を1に置き換える
+        if (g_max - g_min) == 0:
+            gameWindow[gameWindow > 1] = 1
+        else:
+            gameWindow = (gameWindow - g_min) / (g_max - g_min)
         p1Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p1Invincible)
         p2Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p2Invincible)
         State = torch.from_numpy(np.array((gameWindow, p1Invincible, p2Invincible))).to(DEVICE)
