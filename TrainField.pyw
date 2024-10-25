@@ -108,13 +108,13 @@ def main():
         gameWindow = cv2.resize(gameWindow, fx=scale, fy=scale, dsize=None)
         p1Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p1Invincible)
         p2Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), p2Invincible)
-        State = torch.Tensor((gameWindow, p1Invincible, p2Invincible)).to(DEVICE)
+        State = torch.from_numpy(np.array((gameWindow, p1Invincible, p2Invincible))).to(DEVICE)
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
         else:
-            action1P = Model1P(State)
-            action2P = Model2P(State)
+            action1P = Model1P(State.float())
+            action2P = Model2P(State.float())
             action1P = np.array(action1P.cpu().detach().numpy()).argmax()
             action2P = np.array(action2P.cpu().detach().numpy()).argmax()
         
