@@ -182,10 +182,7 @@ def update(player1:Player.Player,
     
     if player2.currentEnergy > 0:
         pygame.draw.rect(screen, EnergyColor_2P, [290, 10, int(player2.currentEnergy*0.25), 20])
-    gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
-    g_min = gameWindow.min(axis=None, keepdims=True)
-    g_max = gameWindow.max(axis=None, keepdims=True)
-    gameWindow = (gameWindow - g_min) / (g_max - g_min)
+
     return getObservation(player1, player2)
 
 def Result(player1:Player.Player,player2:Player.Player, key:tuple, surface: pygame.Surface) -> tuple[int, int]:
