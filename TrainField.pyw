@@ -79,8 +79,9 @@ def main():
         else:
             Model1P.eval()
             Model2P.eval()
-            action1P = Model1P(Input.to(DEVICE)).max()
-            action2P = Model2P(Input.to(DEVICE)).max()
+            with torch.cuda.amp.autocast_mode.autocast():
+                action1P = Model1P(Input).max()
+                action2P = Model2P(Input).max()
             action1P = action1P.cpu().detach().numpy()
             action2P = action2P.cpu().detach().numpy()
         
@@ -112,6 +113,8 @@ def main():
             miniBatch = Memory1P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
             inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            scalar = torch.cuda.amp.grad_scaler.GradScaler()
+            optimizer1P.zero_grad()
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
@@ -125,17 +128,20 @@ def main():
                 inputs[i] = state
                 targets[i] = Model1P(state).flatten()
                 targets[i][action] = target
-            optimizer1P.zero_grad()
-            outputs = Model1P(inputs)
-            loss = criterion1P(outputs, targets)
-            loss.backward()
-            optimizer1P.step()
+            with torch.cuda.amp.autocast_mode.autocast():
+                outputs = Model1P(inputs)
+                loss = criterion1P(outputs, targets)
+            scalar.scale(loss).backward()
+            scalar.step(optimizer1P)
+            scalar.update()
         
         if Memory2P.length() > batch_size:
-            Model2P.train(True)
+            Model2P.train()
             miniBatch = Memory2P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
             inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            scalar = torch.cuda.amp.grad_scaler.GradScaler()
+            optimizer2P.zero_grad()
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
@@ -149,11 +155,12 @@ def main():
                 inputs[i] = state
                 targets[i] = Model2P(state).flatten()
                 targets[i][action] = target
-            optimizer2P.zero_grad()
-            outputs = Model2P(inputs)
-            loss = criterion2P(outputs, targets)
-            loss.backward()
-            optimizer2P.step()
+            with torch.cuda.amp.autocast_mode.autocast():
+                outputs = Model2P(inputs)
+                loss = criterion2P(outputs, targets)
+            scalar.scale(loss).backward()
+            scalar.step(optimizer2P)
+            scalar.update()
                 
     SaveModel()
 
