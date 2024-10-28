@@ -44,49 +44,18 @@ optimizer2P = optim.Adam(Model2P.parameters(),lr=0.001,weight_decay=0.005)
 
 max_episode = 10000
 
-#     if current_episode > JustLooking:
-#         Experience1P = []
-#         Experience1P.extend(State)
-#         Experience1P.append(float(P1reward))
-#         Experience1P.append(loadAction1P)
-#         Experience1P.extend(NextState)
-#         Memory1P.append(Experience1P)
-
-#         Experience2P = []
-#         Experience2P.extend(State)
-#         Experience2P.append(float(P2Reward))
-#         Experience2P.append(loadAction2P)
-#         Experience2P.extend(NextState)
-#         Memory2P.append(Experience2P)
-    
-#     State = NextState
-#     if Memory1P.length() > batch_size:
-#         Inputs = np.array(Memory1P.sample(batch_size),dtype=np.float32)
-#         Output_train = Model1P(torch.from_numpy(Inputs).to(DEVICE))
-#         Output_Target = Target_Model1P(torch.from_numpy(Inputs).to(DEVICE))
-#         loss1P = criterion1P(Output_train,Output_Target)
-#         optimizer1P.zero_grad()
-#         loss1P.backward(retain_graph=True)
-#         optimizer1P.step()
-    
-#     if Memory2P.length() > batch_size:
-#         Inputs = np.array(Memory2P.sample(batch_size),dtype=np.float32)
-#         Output_train = Model2P(torch.from_numpy(Inputs).to(DEVICE))
-#         Output_Target = Target_Model2P(torch.from_numpy(Inputs).to(DEVICE))
-#         loss2P = criterion2P(Output_train,Output_Target)
-#         optimizer2P.zero_grad()
-#         loss2P.backward(retain_graph=True)
-#         optimizer2P.step()
-
 #ゲームループ本体
 def main():
     Game.start(Player1, Player2)
+    global Model1P
+    global Model2P
     global Target_Model1P
     global Target_Model2P
     global optimizer1P
     global optimizer2P
     global Memory1P
     global Memory2P
+    scale = 0.125
     epsilon = 1.0
     eps_end = 0.01
     eps_reduce_rate = 0.001
@@ -107,27 +76,15 @@ def main():
         action2P = -1
         step += 1
         State, finishedFlag, _, _ = Game.getObservation(Player1, Player2)
-        gameWindow, p1Invincible, p2Invincible = State
-        scale = 0.125
-        gameWindow = cv2.resize(np.array(gameWindow, dtype='uint8'), fx=scale, fy=scale, dsize=None)
-        g_min = gameWindow.min()
-        g_max = gameWindow.max()
-        # 正規化時のゼロ除算対策
-        if (g_max - g_min) == 0:
-            gameWindow[:] = 0 if g_min == 0 else 1
-        else:
-            gameWindow = (gameWindow - g_min) / (g_max - g_min)
-        p1Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)),int(p1Invincible))
-        p2Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)), int(p2Invincible))
-        State = torch.from_numpy(np.array((gameWindow, p1Invincible, p2Invincible))).to(DEVICE)
+        Input = convertStateToAgent(State, scale)
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
         else:
-            action1P = Model1P(State.float())
-            action2P = Model2P(State.float())
-            action1P = np.array(action1P.cpu().detach().numpy()).argmax()
-            action2P = np.array(action2P.cpu().detach().numpy()).argmax()
+            action1P = Model1P(Input.to(DEVICE)).max()
+            action2P = Model2P(Input.to(DEVICE)).max()
+            action1P = action1P.cpu().detach().numpy()
+            action2P = action2P.cpu().detach().numpy()
         
         NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
         
@@ -136,7 +93,7 @@ def main():
             current_episode += 1
             # NextStateを「状態なし」に
             NextState = list(NextState)
-            NextState[0] = np.zeros(NextState[0].shape)
+            NextState[0] = np.full(NextState[0].shape, -1)
             NextState[1] = False
             NextState[2] = False
             NextState = tuple(NextState)
@@ -150,8 +107,68 @@ def main():
                 Memory1P.append((State, action1P, p1reward, NextState))
                 Memory2P.append((State, action2P, p2reward, NextState))
             State = NextState
-    
+        if Memory1P.length() > batch_size:
+            miniBatch = Memory1P.sample(batch_size)
+            targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
+            inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            for i, (state, action, reward, nextState) in enumerate(miniBatch):
+                nextState = list(nextState)
+                if np.all(nextState[0] == -1) == False:
+                    nextState = convertStateToAgent(nextState, scale)
+                    maxQ = Target_Model1P(nextState)
+                    target = reward + gamma * torch.max(maxQ)
+                else:
+                    target = reward
+                state = convertStateToAgent(state, scale)
+                inputs[i] = state
+                targets[i] = Model1P(state).flatten()
+                targets[i][action] = target
+            optimizer1P.zero_grad()
+            outputs = Model1P(inputs)
+            loss = criterion1P(outputs, targets)
+            loss.backward()
+            optimizer1P.step()
+        
+        if Memory2P.length() > batch_size:
+            miniBatch = Memory2P.sample(batch_size)
+            targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
+            inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            for i, (state, action, reward, nextState) in enumerate(miniBatch):
+                nextState = list(nextState)
+                if np.all(nextState[0] == -1) == False:
+                    nextState = convertStateToAgent(nextState, scale)
+                    maxQ = Target_Model2P(nextState)
+                    target = reward + gamma * torch.max(maxQ)
+                else:
+                    target = reward
+                state = convertStateToAgent(state, scale)
+                inputs[i] = state
+                targets[i] = Model2P(state).flatten()
+                targets[i][action] = target
+            optimizer2P.zero_grad()
+            outputs = Model2P(inputs)
+            loss = criterion2P(outputs, targets)
+            loss.backward()
+            optimizer2P.step()
+                
     SaveModel()
+
+def convertStateToAgent(state : tuple[np.ndarray, int, int], scale = 0.25, device=DEVICE) -> torch.Tensor:
+    gameWindow, p1Invincible, p2Invincible = state
+    size = (int(Game.Width * scale), int(Game.Height * scale))
+    gameWindow : np.ndarray = cv2.resize(gameWindow.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
+    g_min = gameWindow.min()
+    g_max = gameWindow.max()
+    # 正規化時のゼロ除算対策
+    # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minが0なら0、そうでないなら1にする
+    if (g_max - g_min) == 0:
+        gameWindow[:] = 0 if g_min != 0 else 1
+    else:
+        gameWindow = (gameWindow - g_min) / (g_max - g_min)
+    gameWindow = torch.from_numpy(gameWindow).to(device)
+    p1Invincible = torch.full(size, int(p1Invincible)).to(device)
+    p2Invincible = torch.full(size, int(p2Invincible)).to(device)
+    return torch.stack((gameWindow, p1Invincible, p2Invincible)).float()
 
 def SaveModel():
     #モデル+ReplayMemory保存処理
