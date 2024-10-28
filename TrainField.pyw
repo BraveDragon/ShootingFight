@@ -97,6 +97,8 @@ def main():
             NextState[1] = False
             NextState[2] = False
             NextState = tuple(NextState)
+            Target_Model1P.load_state_dict(Model1P.state_dict())
+            Target_Model2P.load_state_dict(Model2P.state_dict())
             if step > JustLooking:
                 Memory1P.append((State, action1P, p1reward, NextState))
                 Memory2P.append((State, action2P, p2reward, NextState))
@@ -115,7 +117,8 @@ def main():
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
                     nextState = convertStateToAgent(nextState, scale)
-                    maxQ = Target_Model1P(nextState)
+                    with torch.no_grad():
+                        maxQ = Target_Model1P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
@@ -137,7 +140,8 @@ def main():
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
                     nextState = convertStateToAgent(nextState, scale)
-                    maxQ = Target_Model2P(nextState)
+                    with torch.no_grad():
+                        maxQ = Target_Model2P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
