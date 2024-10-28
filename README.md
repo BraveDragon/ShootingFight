@@ -24,13 +24,16 @@
 - VsAI.pyw：実行すると人間 VS AIでゲームが始まります。実行する時は、あらかじめ「TrainField.pyw」を実行して学習済みモデルを生成しておいてください。
 
 ## ＜使用ライブラリ・ツールのバージョン＞
-- numpy：1.18.4
 
-- pygame：1.9.6
+- numpy：1.26.4
 
-- Python：3.7.7
+- pygame：2.6.0
 
-- pytorch：1.6.0
+- Python：3.10.6
+
+- pytorch：1.12.1
+
+- OpenCV (cv2)：4.10.0
 
 - 学習に使用したGPU：NVIDIA GeForce RTX 2060
 
