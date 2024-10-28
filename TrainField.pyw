@@ -56,11 +56,12 @@ def main():
     global Memory1P
     global Memory2P
     scale = 0.125
-    epsilon = 1.0
+    eps_start = 1.0
     eps_end = 0.01
     eps_reduce_rate = 0.001
     current_episode = 0
     step = 0
+    total_step = 0
     
     while current_episode < max_episode:
         for event in pygame.event.get():
@@ -69,12 +70,11 @@ def main():
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
-        if epsilon > eps_end:
-            epsilon -= eps_reduce_rate
+
+        epsilon = eps_end + (eps_start - eps_end) * np.exp(-eps_reduce_rate * total_step)
         
-        action1P = -1
-        action2P = -1
         step += 1
+        total_step += 1
         State, finishedFlag, _, _ = Game.getObservation(Player1, Player2)
         Input = convertStateToAgent(State, scale)
         if epsilon > np.random.rand():
