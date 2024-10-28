@@ -4,8 +4,12 @@ import torch.nn as nn
 import torch.optim
 
 Outputs = 23
-#この一文で学習を高速化
+#デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
+torch.autograd.set_detect_anomaly(False)
+torch.autograd.profiler.emit_nvtx(False)
+torch.autograd.profiler.profile(False)
+
 #AIを定義するクラス
 class Agent(nn.Module):
     def __init__(self):
