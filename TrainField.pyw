@@ -32,10 +32,6 @@ Target_Model2P = Agent.Agent().to(DEVICE)
 Memory1P = Memory.ReplayMemory(memsize)
 Memory2P = Memory.ReplayMemory(memsize)
 
-Model1P.train(True)
-Model2P.train(True)
-Target_Model1P.train(True)
-Target_Model2P.train(True)
 criterion1P = nn.SmoothL1Loss()
 criterion2P = nn.SmoothL1Loss()
 
@@ -81,6 +77,8 @@ def main():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
         else:
+            Model1P.eval()
+            Model2P.eval()
             action1P = Model1P(Input.to(DEVICE)).max()
             action2P = Model2P(Input.to(DEVICE)).max()
             action1P = action1P.cpu().detach().numpy()
@@ -110,6 +108,7 @@ def main():
                 Memory2P.append((State, action2P, p2reward, NextState))
             State = NextState
         if Memory1P.length() > batch_size:
+            Model1P.train()
             miniBatch = Memory1P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
             inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
@@ -133,6 +132,7 @@ def main():
             optimizer1P.step()
         
         if Memory2P.length() > batch_size:
+            Model2P.train(True)
             miniBatch = Memory2P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
             inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
