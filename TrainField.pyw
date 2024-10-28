@@ -113,9 +113,8 @@ def main():
         g_min = gameWindow.min()
         g_max = gameWindow.max()
         # 正規化時のゼロ除算対策
-        # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minに置き換える
         if (g_max - g_min) == 0:
-            gameWindow[:] = g_min
+            gameWindow[:] = 0 if g_min == 0 else 1
         else:
             gameWindow = (gameWindow - g_min) / (g_max - g_min)
         p1Invincible = torch.full((int(Game.Width * scale), int(Game.Height * scale)),int(p1Invincible))
