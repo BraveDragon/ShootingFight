@@ -13,9 +13,6 @@ import cv2
 import Memory
 import numpy as np
 
-Bullets = []
-Player1 = None
-Player2 = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 memsize = 10000
@@ -51,7 +48,6 @@ def main():
     global optimizer2P
     global Memory1P
     global Memory2P
-    scale = 0.125
     eps_start = 1.0
     eps_end = 0.01
     eps_reduce_rate = 0.001
@@ -72,7 +68,7 @@ def main():
         step += 1
         total_step += 1
         State, finishedFlag, _, _ = Game.getObservation(Player1, Player2)
-        Input = convertStateToAgent(State, scale)
+        Input = Game.convertStateToAgent(State, DEVICE, Game.scale)
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
@@ -80,10 +76,8 @@ def main():
             Model1P.eval()
             Model2P.eval()
             with torch.no_grad():
-                action1P = Model1P(Input.to(DEVICE)).max()
-                action2P = Model2P(Input.to(DEVICE)).max()
-            action1P = action1P.cpu().detach().numpy()
-            action2P = action2P.cpu().detach().numpy()
+                action1P = Model1P(Input).max().cpu().detach().numpy()
+                action2P = Model2P(Input).max().cpu().detach().numpy()
         
         NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
         
@@ -116,13 +110,13 @@ def main():
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
-                    nextState = convertStateToAgent(nextState, scale)
+                    nextState = Game.convertStateToAgent(nextState, DEVICE, Game.scale)
                     with torch.no_grad():
                         maxQ = Target_Model1P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
-                state = convertStateToAgent(state, scale)
+                state = Game.convertStateToAgent(state, DEVICE, Game.scale)
                 inputs[i] = state
                 targets[i] = Model1P(state).flatten()
                 targets[i][action] = target
@@ -140,13 +134,13 @@ def main():
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
-                    nextState = convertStateToAgent(nextState, scale)
+                    nextState = Game.convertStateToAgent(nextState, DEVICE, Game.scale)
                     with torch.no_grad():
                         maxQ = Target_Model2P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
-                state = convertStateToAgent(state, scale)
+                state = Game.convertStateToAgent(state, DEVICE, Game.scale)
                 inputs[i] = state
                 targets[i] = Model2P(state).flatten()
                 targets[i][action] = target
@@ -158,22 +152,7 @@ def main():
                 
     SaveModel()
 
-def convertStateToAgent(state : tuple[np.ndarray, int, int], scale = 0.25, device=DEVICE) -> torch.Tensor:
-    gameWindow, p1Invincible, p2Invincible = state
-    size = (int(Game.Width * scale), int(Game.Height * scale))
-    gameWindow : np.ndarray = cv2.resize(gameWindow.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
-    g_min = gameWindow.min()
-    g_max = gameWindow.max()
-    # 正規化時のゼロ除算対策
-    # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minが0なら0、そうでないなら1にする
-    if (g_max - g_min) == 0:
-        gameWindow[:] = 0 if g_min != 0 else 1
-    else:
-        gameWindow = (gameWindow - g_min) / (g_max - g_min)
-    gameWindow = torch.from_numpy(gameWindow).to(device)
-    p1Invincible = torch.full(size, int(p1Invincible)).to(device)
-    p2Invincible = torch.full(size, int(p2Invincible)).to(device)
-    return torch.stack((gameWindow, p1Invincible, p2Invincible)).float()
+
 
 def SaveModel():
     #モデル+ReplayMemory保存処理

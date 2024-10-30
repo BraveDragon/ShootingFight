@@ -7,6 +7,8 @@ from Resources import Resources
 import Bullet
 import Player
 import numpy as np
+import torch
+import cv2
 
 MAX_UFOs = 1
 MAX_Aliens = 2
@@ -15,6 +17,8 @@ UFOs : list[Objects.Objects] = []
 Aliens: list[Objects.Objects] = []
 Width = 800
 Height = 600
+# AIに送信する画面サイズの倍率
+scale = 0.125
 
 pygame.init()
 pygame.display.set_caption("ShootingFight")
@@ -274,4 +278,20 @@ def getObservation(player1:Player.Player, player2: Player.Player) -> tuple[tuple
     P1reward, P2reward = getReward(player1.currentEnergy, player2.currentEnergy)
     finishedFlag = False if P1reward == 0 and P2reward == 0 else True
     return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), finishedFlag, P1reward, P2reward)
-    
+
+def convertStateToAgent(state : tuple[np.ndarray, int, int], device, scale = 0.25) -> torch.Tensor:
+    gameWindow, p1Invincible, p2Invincible = state
+    size = (int(Width * scale), int(Height * scale))
+    gameWindow : np.ndarray = cv2.resize(gameWindow.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
+    g_min = gameWindow.min()
+    g_max = gameWindow.max()
+    # 正規化時のゼロ除算対策
+    # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minが0なら0、そうでないなら1にする
+    if (g_max - g_min) == 0:
+        gameWindow[:] = 0 if g_min != 0 else 1
+    else:
+        gameWindow = (gameWindow - g_min) / (g_max - g_min)
+    gameWindow = torch.from_numpy(gameWindow).to(device)
+    p1Invincible = torch.full(size, int(p1Invincible)).to(device)
+    p2Invincible = torch.full(size, int(p2Invincible)).to(device)
+    return torch.stack((gameWindow, p1Invincible, p2Invincible)).float()    
