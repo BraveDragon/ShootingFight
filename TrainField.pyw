@@ -55,6 +55,9 @@ def main():
     total_step = 0
     
     while current_episode < max_episode:
+        #最大フレームレートを30fpsで固定
+        clock = pygame.time.Clock()
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 SaveModel()

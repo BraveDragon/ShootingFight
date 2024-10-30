@@ -34,6 +34,9 @@ def main():
                 pygame.quit()
                 sys.exit()
         pygame.display.update()
+        #最大フレームレートを30fpsで固定
+        clock = pygame.time.Clock()
+        clock.tick(30)
         state, _, _, _ = Game.getObservation(Player1, Player2)
         with torch.no_grad():
             Input = Agent.convertStateToAgent(state, DEVICE,Game.Width, Game.Height, Agent.scale)
