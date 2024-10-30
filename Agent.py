@@ -1,9 +1,14 @@
 #coding: "utf-8"
+#AIのモデルやその関連関数・定数を定義
 import torch
 import torch.nn as nn
 import torch.optim
+import numpy as np
+import cv2
 
 Outputs = 24
+# AIに送信する画面サイズの倍率
+scale = 0.125
 #デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
 torch.autograd.set_detect_anomaly(False)
@@ -34,3 +39,20 @@ class Agent(nn.Module):
         x = self.fc2(x)
 
         return(x)
+
+def convertStateToAgent(state : tuple[np.ndarray, int, int], device, width, height, scale = 0.25) -> torch.Tensor:
+    gameWindow, p1Invincible, p2Invincible = state
+    size = (int(width * scale), int(height * scale))
+    gameWindow : np.ndarray = cv2.resize(gameWindow.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
+    g_min = gameWindow.min()
+    g_max = gameWindow.max()
+    # 正規化時のゼロ除算対策
+    # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minが0なら0、そうでないなら1にする
+    if (g_max - g_min) == 0:
+        gameWindow[:] = 0 if g_min != 0 else 1
+    else:
+        gameWindow = (gameWindow - g_min) / (g_max - g_min)
+    gameWindow = torch.from_numpy(gameWindow).to(device)
+    p1Invincible = torch.full(size, int(p1Invincible)).to(device)
+    p2Invincible = torch.full(size, int(p2Invincible)).to(device)
+    return torch.stack((gameWindow, p1Invincible, p2Invincible)).float()    

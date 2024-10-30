@@ -9,7 +9,6 @@ import Agent
 import torch
 import torch.optim as optim
 import torch.nn as nn
-import cv2
 import Memory
 import numpy as np
 
@@ -68,7 +67,7 @@ def main():
         step += 1
         total_step += 1
         State, finishedFlag, _, _ = Game.getObservation(Player1, Player2)
-        Input = Game.convertStateToAgent(State, DEVICE, Game.scale)
+        Input = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
             action2P = np.random.randint(0, Agent.Outputs)
@@ -110,13 +109,13 @@ def main():
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
-                    nextState = Game.convertStateToAgent(nextState, DEVICE, Game.scale)
+                    nextState = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
                     with torch.no_grad():
                         maxQ = Target_Model1P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
-                state = Game.convertStateToAgent(state, DEVICE, Game.scale)
+                state = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
                 inputs[i] = state
                 targets[i] = Model1P(state).flatten()
                 targets[i][action] = target
@@ -134,13 +133,13 @@ def main():
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
-                    nextState = Game.convertStateToAgent(nextState, DEVICE, Game.scale)
+                    nextState = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
                     with torch.no_grad():
                         maxQ = Target_Model2P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
                 else:
                     target = reward
-                state = Game.convertStateToAgent(state, DEVICE, Game.scale)
+                state = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
                 inputs[i] = state
                 targets[i] = Model2P(state).flatten()
                 targets[i][action] = target
