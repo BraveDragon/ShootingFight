@@ -116,179 +116,320 @@ class Player:
                 self.bulletStrong_pressed_past = 1
             
             #移動+弾1つ撃ち
-            if ai_input == 6 and self.bulletWeak_pressed_past != 1:
+            if ai_input == 6:
                 #左移動+威力小の弾発射
                 self.__x -= Gunpoint_Speed
-                self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                self.bulletWeak_pressed_past = 1
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 0
-            if ai_input == 7 and self.bulletMiddle_pressed_past != 1:
+            if ai_input == 7:
                 #左移動+威力中の弾発射
                 self.__x -= Gunpoint_Speed
-                self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
                 self.bulletWeak_pressed_past = 0
-                self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
                 
-            if ai_input == 8 and self.bulletStrong_pressed_past != 1:
+            if ai_input == 8:
                 #左移動+威力大の弾発射
                 self.__x -= Gunpoint_Speed
-                self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
-                self.bulletStrong_pressed_past = 1
+                
             
-            if ai_input == 9 and self.bulletWeak_pressed_past != 1:
+            if ai_input == 9:
                 #右移動+威力小の弾発射
                 self.__x += Gunpoint_Speed 
-                self.currentEnergy -= Bullet.WEAK_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                self.bulletWeak_pressed_past = 1
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
                 self.bulletStrong_pressed_past = 0
 
-            if ai_input == 10 and self.bulletMiddle_pressed_past != 1:
+            if ai_input == 10:
                 #右移動+威力中の弾発射
                 self.__x += Gunpoint_Speed
-                self.currentEnergy -= Bullet.MIDDLE_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
                 self.bulletWeak_pressed_past = 0
-                self.bulletMiddle_pressed_past = 1
                 self.bulletStrong_pressed_past = 0
             
-            if ai_input == 11 and self.bulletStrong_pressed_past != 1:
+            if ai_input == 11:
                 #右移動+威力大の弾発射
                 self.__x += Gunpoint_Speed 
-                self.currentEnergy -= Bullet.STRONG_COST
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
                 self.bulletWeak_pressed_past = 0
                 self.bulletMiddle_pressed_past = 0
-                self.bulletStrong_pressed_past = 1
+                
 
             #2種類の弾を発射
-            if ai_input == 12 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1:
+            if ai_input == 12:
                 #小+中
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-            
-            if ai_input == 13 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
-                #小+大
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 0
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
 
-            if ai_input == 14 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+
+                self.bulletStrong_pressed_past = 0
+                
+            if ai_input == 13:
+                #小+大
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+
+                self.bulletMiddle_pressed_past = 0
+                
+            if ai_input == 14:
                 #中+大
-                self.currentEnergy -= (Bullet.MIDDLE_COST + Bullet.STRONG_COST)
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+                
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+                
                 self.bulletWeak_pressed_past = 0
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             #移動しながら2種類の弾を発射
-            if ai_input == 15 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1:
+            if ai_input == 15:
                 #左移動+小+中
                 self.__x -= Gunpoint_Speed
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+
                 self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             
-            if ai_input == 16 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+            if ai_input == 16:
                 #左移動+小+大
                 self.__x -= Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 0
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
 
-            if ai_input == 17 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+
+                self.bulletMiddle_pressed_past = 0
+
+            if ai_input == 17:
                 #左移動+中+大
                 self.__x -= Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.MIDDLE_COST + Bullet.STRONG_COST)
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+                
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+                
                 self.bulletWeak_pressed_past = 0
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
-            if ai_input == 18 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1:
+            if ai_input == 18:
                 #右移動+小+中
                 self.__x += Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+
                 self.bulletStrong_pressed_past = 0
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
             
-            if ai_input == 19 and self.bulletWeak_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+            if ai_input == 19:
                 #右移動+小+大
                 self.__x += Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 0
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
 
-            if ai_input == 20 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+
+                self.bulletMiddle_pressed_past = 0
+
+            if ai_input == 20:
                 #右移動+中+大
                 self.__x += Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.MIDDLE_COST + Bullet.STRONG_COST)
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+                
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+                
                 self.bulletWeak_pressed_past = 0
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
             
             #全発射
-            if ai_input == 21 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+            if ai_input == 21:
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
                 
-            if ai_input == 22 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
+                
+            if ai_input == 22:
                 #左移動+弾全発射
                 self.__x -= Gunpoint_Speed 
-                self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+                
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
             
-            if ai_input == 23 and self.bulletWeak_pressed_past != 1 and self.bulletMiddle_pressed_past != 1 and self.bulletStrong_pressed_past != 1:
+            if ai_input == 23:
                 #右移動+弾全発射
                 self.__x += Gunpoint_Speed 
                 self.currentEnergy -= (Bullet.WEAK_COST + Bullet.MIDDLE_COST + Bullet.STRONG_COST)
-                self.bulletWeak_pressed_past = 1
-                self.bulletMiddle_pressed_past = 1
-                self.bulletStrong_pressed_past = 1
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
-                bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                if self.bulletWeak_pressed_past != 1:
+                    self.currentEnergy -= Bullet.WEAK_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_WEAK, self.bulletDirection))
+                    self.bulletWeak_pressed_past = 1
+                else:
+                    self.bulletWeak_pressed_past = 0
+
+                if self.bulletMiddle_pressed_past != 1:
+                    self.currentEnergy -= Bullet.MIDDLE_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y, Bullet.BULLET_MIDDLE, self.bulletDirection))
+                    self.bulletMiddle_pressed_past = 1
+                else:
+                    self.bulletMiddle_pressed_past = 0
+                
+                if self.bulletStrong_pressed_past != 1:
+                    self.currentEnergy -= Bullet.STRONG_COST
+                    bullets.append(Bullet.Bullet(self.__x+25,self.y,Bullet.BULLET_STRONG, self.bulletDirection))
+                    self.bulletStrong_pressed_past = 1
+                else:
+                    self.bulletStrong_pressed_past = 0
             
         
         #行き過ぎの抑制
