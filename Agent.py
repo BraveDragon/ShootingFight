@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim
 
-Outputs = 23
+Outputs = 24
 #デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
 torch.autograd.set_detect_anomaly(False)
