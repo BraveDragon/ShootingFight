@@ -79,8 +79,9 @@ def main():
         else:
             Model1P.eval()
             Model2P.eval()
-            action1P = Model1P(Input.to(DEVICE)).max()
-            action2P = Model2P(Input.to(DEVICE)).max()
+            with torch.no_grad():
+                action1P = Model1P(Input.to(DEVICE)).max()
+                action2P = Model2P(Input.to(DEVICE)).max()
             action1P = action1P.cpu().detach().numpy()
             action2P = action2P.cpu().detach().numpy()
         
