@@ -35,9 +35,9 @@ def main():
                 sys.exit()
         pygame.display.update()
         state, _, _, _ = Game.getObservation(Player1, Player2)
-        Input = Agent.convertStateToAgent(state, DEVICE,Game.Width, Game.Height, Agent.scale)
         with torch.no_grad():
-            action2P =  Model2P(Input).argmax().cpu().detach().numpy()
+            Input = Agent.convertStateToAgent(state, DEVICE,Game.Width, Game.Height, Agent.scale)
+            action2P =  torch.argmax(Model2P(Input)).cpu().detach().numpy()
         Game.update(Player1, Player2, P2Input=action2P)
 
 if __name__ == '__main__':
