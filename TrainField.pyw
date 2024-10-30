@@ -75,8 +75,8 @@ def main():
             Model1P.eval()
             Model2P.eval()
             with torch.no_grad():
-                action1P = Model1P(Input).max().cpu().detach().numpy()
-                action2P = Model2P(Input).max().cpu().detach().numpy()
+                action1P = torch.argmax(Model1P(Input)).argmax().cpu().detach().numpy()
+                action2P = torch.argmax(Model2P(Input)).argmax().cpu().detach().numpy()
         
         NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
         

@@ -18,16 +18,16 @@ batch_size = 32
 JustLooking = 10
 current_episode = 0
 
-Player1 = Player.Player(True, False)
-Player2 = Player.Player(False,True)
+Player1 = Player.Player(True)
+Player2 = Player.Player(False)
 
 Model2P = Agent.Agent().to(DEVICE)
-Model2P.append_state_dict(torch.append("Model2P.pth"))
+Model2P.load_state_dict(torch.load("Model2P.pth"))
 Model2P.eval()
 
 #ゲームループ本体
 def main():
-    Game.start()
+    Game.start(Player1, Player2)
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -37,7 +37,7 @@ def main():
         state, _, _, _ = Game.getObservation(Player1, Player2)
         Input = Agent.convertStateToAgent(state, DEVICE,Game.Width, Game.Height, Agent.scale)
         with torch.no_grad():
-            action2P =  Model2P(Input).max().cpu().detach().numpy()
+            action2P =  Model2P(Input).argmax().cpu().detach().numpy()
         Game.update(Player1, Player2, P2Input=action2P)
 
 if __name__ == '__main__':
