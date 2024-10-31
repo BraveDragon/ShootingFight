@@ -19,8 +19,6 @@ batch_size = 32
 JustLooking = 10
 gamma = 0.99
 
-Player1 = Player.Player(True)
-Player2 = Player.Player(False)
 Model1P = Agent.Agent().to(DEVICE)
 Model2P = Agent.Agent().to(DEVICE)
 Target_Model1P = Agent.Agent().to(DEVICE)
@@ -38,7 +36,10 @@ max_episode = 10000
 
 #ゲームループ本体
 def main():
+    Player1 = Player.Player(True)
+    Player2 = Player.Player(False)
     Game.start(Player1, Player2)
+
     global Model1P
     global Model2P
     global Target_Model1P
