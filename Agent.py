@@ -8,7 +8,7 @@ import cv2
 
 Outputs = 24
 # AIに送信する画面サイズの倍率
-scale = 0.25
+scale = 0.125
 #デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
 torch.autograd.set_detect_anomaly(False)
@@ -22,7 +22,7 @@ class Agent(nn.Module):
         self.relu = nn.ReLU()
         self.conv1 = nn.Conv2d(3, 3, 16)
         self.conv2 = nn.Conv2d(3, 1, 16)
-        self.fc1 = nn.Linear(20400,32)
+        self.fc1 = nn.Linear(3150,32)
         self.fc2 = nn.Linear(32, Outputs)
     
     def forward(self, x):
@@ -35,7 +35,7 @@ class Agent(nn.Module):
         x = self.relu(x)
         x = self.fc2(x)
 
-        return(x)
+        return x
 
 def convertStateToAgent(state : tuple[np.ndarray, int, int], device, width, height, scale = 0.25) -> torch.Tensor:
     gameWindow, p1Invincible, p2Invincible = state

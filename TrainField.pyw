@@ -28,8 +28,8 @@ Target_Model2P = Agent.Agent().to(DEVICE)
 Memory1P = Memory.ReplayMemory(memsize)
 Memory2P = Memory.ReplayMemory(memsize)
 
-criterion1P = nn.SmoothL1Loss()
-criterion2P = nn.SmoothL1Loss()
+criterion1P = nn.HuberLoss()
+criterion2P = nn.HuberLoss()
 
 optimizer1P = optim.Adam(Model1P.parameters(),lr=0.001,weight_decay=0.005)
 optimizer2P = optim.Adam(Model2P.parameters(),lr=0.001,weight_decay=0.005)
