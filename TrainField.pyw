@@ -108,11 +108,11 @@ def main():
             Model1P.train()
             miniBatch = Memory1P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
-            inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            inputs = torch.empty((batch_size, 3, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))).to(DEVICE)
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
-                    nextState = Agent.convertStateToAgent(State, DEVICE,Game.Width, Game.Height, Agent.scale)
+                    nextState = Agent.convertStateToAgent(State, DEVICE, Game.Width, Game.Height, Agent.scale)
                     with torch.no_grad():
                         maxQ = Target_Model1P(nextState).flatten()
                     target = reward + gamma * torch.max(maxQ)
@@ -132,7 +132,7 @@ def main():
             Model2P.train(True)
             miniBatch = Memory2P.sample(batch_size)
             targets = torch.empty((batch_size, Agent.Outputs)).to(DEVICE)
-            inputs = torch.empty((batch_size, 3, 100, 75)).to(DEVICE)
+            inputs = torch.empty((batch_size, 3, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))).to(DEVICE)
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 nextState = list(nextState)
                 if np.all(nextState[0] == -1) == False:
