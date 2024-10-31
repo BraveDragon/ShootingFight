@@ -11,7 +11,7 @@ Outputs = 24
 scale = 0.125
 #デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
-torch.autograd.set_detect_anomaly(False)
+torch.autograd.set_detect_anomaly(True)
 torch.autograd.profiler.emit_nvtx(False)
 torch.autograd.profiler.profile(False)
 
@@ -20,7 +20,7 @@ class Agent(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
-        self.conv1 = nn.Conv2d(3, 3, 16)
+        self.conv1 = nn.Conv2d(4, 3, 16)
         self.conv2 = nn.Conv2d(3, 1, 16)
         self.fc1 = nn.Linear(3150,32)
         self.fc2 = nn.Linear(32, Outputs)
@@ -37,19 +37,15 @@ class Agent(nn.Module):
 
         return x
 
-def convertStateToAgent(state : tuple[np.ndarray, int, int], device, width, height, scale = 0.25) -> torch.Tensor:
-    gameWindow, p1Invincible, p2Invincible = state
-    size = (int(width * scale), int(height * scale))
-    gameWindow : np.ndarray = cv2.resize(gameWindow.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
-    g_min = gameWindow.min()
-    g_max = gameWindow.max()
+def convertStateToAgent(state : np.ndarray, scale = 0.25) -> torch.Tensor:
+    state : np.ndarray = cv2.resize(state.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
+    g_min = state.min()
+    g_max = state.max()
     # 正規化時のゼロ除算対策
     # (g_max - g_min) が0の時(最大値と最小値が同じ時)はg_minが0なら0、そうでないなら1にする
     if (g_max - g_min) == 0:
-        gameWindow[:] = 0 if g_min != 0 else 1
+        state[:] = 0 if g_min != 0 else 1
     else:
-        gameWindow = (gameWindow - g_min) / (g_max - g_min)
-    gameWindow = torch.from_numpy(gameWindow).to(device)
-    p1Invincible = torch.full(size, int(p1Invincible)).to(device)
-    p2Invincible = torch.full(size, int(p2Invincible)).to(device)
-    return torch.stack((gameWindow, p1Invincible, p2Invincible)).float()    
+        state = (state - g_min) / (g_max - g_min)
+    
+    return state    

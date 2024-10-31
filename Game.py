@@ -269,8 +269,8 @@ def getReward(p1energy : int, p2energy: int) -> tuple[int, int]:
     else:
         return (0, 0)
 
-def getObservation(player1:Player.Player, player2: Player.Player) -> tuple[tuple[np.ndarray, int, int], bool, int, int]:
+def getObservation(player1:Player.Player, player2: Player.Player) -> tuple[np.ndarray, bool, int, int]:
     gameWindow = pygame.surfarray.array2d(pygame.display.get_surface())
     P1reward, P2reward = getReward(player1.currentEnergy, player2.currentEnergy)
     finishedFlag = False if P1reward == 0 and P2reward == 0 else True
-    return ((gameWindow, int(player1.IsInvincible), int(player2.IsInvincible)), finishedFlag, P1reward, P2reward)
+    return (gameWindow, finishedFlag, P1reward, P2reward)
