@@ -20,9 +20,9 @@ class Agent(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
-        self.conv1 = nn.Conv2d(4, 3, 16)
-        self.conv2 = nn.Conv2d(3, 1, 16)
-        self.fc1 = nn.Linear(3150,32)
+        self.conv1 = nn.Conv2d(4, 2, 1)
+        self.conv2 = nn.Conv2d(2, 1, 1)
+        self.fc1 = nn.Linear(7500,32)
         self.fc2 = nn.Linear(32, Outputs)
     
     def forward(self, x):
