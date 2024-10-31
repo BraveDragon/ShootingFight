@@ -164,7 +164,7 @@ def main():
 
 
 def SaveModel():
-    #モデル+ReplayMemory保存処理
+    #モデル保存処理
     torch.save(Model1P.state_dict(),"Model1P.pth")
     torch.save(Model2P.state_dict(),"Model2P.pth")
 
