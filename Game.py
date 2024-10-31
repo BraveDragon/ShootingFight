@@ -7,8 +7,6 @@ from Resources import Resources
 import Bullet
 import Player
 import numpy as np
-import torch
-import cv2
 
 MAX_UFOs = 1
 MAX_Aliens = 2
