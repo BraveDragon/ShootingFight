@@ -8,6 +8,8 @@ import Player
 #AI用
 import Agent
 import torch
+import numpy as np
+from collections import deque
 
 screen : pygame.Surface = None
 clock = None
@@ -28,6 +30,10 @@ Model2P.eval()
 #ゲームループ本体
 def main():
     Game.start(Player1, Player2)
+    input_frames = 4
+    InputDeque = deque(maxlen=input_frames)
+    for _ in range(input_frames):
+        InputDeque.append(np.zeros((int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -38,8 +44,9 @@ def main():
         clock = pygame.time.Clock()
         clock.tick(30)
         state, _, _, _ = Game.getObservation(Player1, Player2)
+        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale))
         with torch.no_grad():
-            Input = Agent.convertStateToAgent(state, DEVICE,Game.Width, Game.Height, Agent.scale)
+            Input = torch.from_numpy(np.array(InputDeque)).float().to(DEVICE)
             action2P =  torch.argmax(Model2P(Input)).cpu().detach().numpy()
         Game.update(Player1, Player2, P2Input=action2P)
 
