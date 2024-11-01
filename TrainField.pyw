@@ -17,7 +17,6 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 memsize = 10000
 batch_size = 32
-JustLooking = 10
 gamma = 0.99
 
 Model1P = Agent.Agent().to(DEVICE)
@@ -97,15 +96,14 @@ def main():
             
             Target_Model1P.load_state_dict(Model1P.state_dict())
             Target_Model2P.load_state_dict(Model2P.state_dict())
-            if step > JustLooking:
-                Memory1P.append((State, action1P, p1reward, NextState))
-                Memory2P.append((State, action2P, p2reward, NextState))
+            
+            Memory1P.append((State, action1P, p1reward, NextState))
+            Memory2P.append((State, action2P, p2reward, NextState))
             step = 0
             Game.start(Player1, Player2)
         else:
-            if step > JustLooking:
-                Memory1P.append((State, action1P, p1reward, NextState))
-                Memory2P.append((State, action2P, p2reward, NextState))
+            Memory1P.append((State, action1P, p1reward, NextState))
+            Memory2P.append((State, action2P, p2reward, NextState))
             State = NextState
         if Memory1P.length() > batch_size:
             Model1P.train()
