@@ -92,6 +92,11 @@ def main():
                 action2P = torch.argmax(Model2P(Input)).argmax().cpu().detach().numpy()
         
         NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
+        # 1分(30FPS × 60秒 = 1800フレーム)経っても決着が付かない時は両者負けとみなして次のエピソードへ
+        if finishedFlag == False and step >= 1800:
+            finishedFlag = True
+            p1reward = -1
+            p2reward = -1
         
         if finishedFlag == True:
             current_episode += 1

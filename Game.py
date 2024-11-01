@@ -262,7 +262,9 @@ def collisionUFO(bullet:Bullet.Bullet, ufo:Objects.Objects, player1:Player.Playe
         player2.IsInvincible = True
 
 def getReward(p1energy : int, p2energy: int) -> tuple[int, int]:
-    if p1energy <= 0:
+    if p1energy <= 0 and p2energy <= 0:
+        return (-1, -1)
+    elif p1energy <= 0:
         return (-1, 1)
     elif p2energy <= 0:
         return (1, -1)
