@@ -31,9 +31,10 @@ Model2P.eval()
 def main():
     Game.start(Player1, Player2)
     input_frames = 4
+    window_dim = 3
     InputDeque = deque(maxlen=input_frames)
     for _ in range(input_frames):
-        InputDeque.append(np.zeros((int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
+        InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,9 +45,10 @@ def main():
         clock = pygame.time.Clock()
         clock.tick(30)
         state, _, _, _ = Game.getObservation(Player1, Player2)
-        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale))
+        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale).reshape(-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
         with torch.no_grad():
-            Input = torch.from_numpy(np.array(InputDeque)).float().to(DEVICE)
+            Input = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
+            Input = torch.from_numpy(Input).float().to(DEVICE)
             action2P =  torch.argmax(Model2P(Input)).cpu().detach().numpy()
         Game.update(Player1, Player2, P2Input=action2P)
 

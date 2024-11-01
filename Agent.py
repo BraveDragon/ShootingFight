@@ -11,7 +11,7 @@ Outputs = 24
 scale = 0.125
 #デバッグ用の機能を無効化
 torch.backends.cudnn.benchmark = True
-torch.autograd.set_detect_anomaly(True)
+torch.autograd.set_detect_anomaly(False)
 torch.autograd.profiler.emit_nvtx(False)
 torch.autograd.profiler.profile(False)
 
@@ -20,9 +20,9 @@ class Agent(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
-        self.conv1 = nn.Conv2d(4, 2, 1)
-        self.conv2 = nn.Conv2d(2, 1, 1)
-        self.fc1 = nn.Linear(7500,32)
+        self.conv1 = nn.Conv2d(12, 8, 1)
+        self.conv2 = nn.Conv2d(8, 4, 1)
+        self.fc1 = nn.Linear(30000,32)
         self.fc2 = nn.Linear(32, Outputs)
     
     def forward(self, x):
@@ -37,7 +37,7 @@ class Agent(nn.Module):
 
         return x
 
-def convertStateToAgent(state : np.ndarray, scale = 0.25) -> torch.Tensor:
+def convertStateToAgent(state : np.ndarray, scale = 0.25) -> np.ndarray:
     state : np.ndarray = cv2.resize(state.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
     g_min = state.min()
     g_max = state.max()
