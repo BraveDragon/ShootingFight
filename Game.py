@@ -190,8 +190,12 @@ def Result(player1:Player.Player,player2:Player.Player, key:tuple, surface: pyga
     font = pygame.font.Font(None, 200)
     if key[pygame.K_SPACE]:
         start(player1, player2)
+    #引き分け時
+    if player1.currentEnergy <= 0 and player2.currentEnergy <= 0: 
+        text = font.render("DRAW", True, (255, 255, 255))
+        surface.blit(text,[150, 250])
     #1P敗北時
-    if player1.currentEnergy <= 0:
+    elif player1.currentEnergy <= 0:
         text = font.render("2P WIN!", True, (255, 255, 255))
         surface.blit(text,[150, 250])
     #2P敗北時
