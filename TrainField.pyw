@@ -76,8 +76,7 @@ def main():
         step += 1
         total_step += 1
         State, finishedFlag, _, _ = Game.getObservation(Player1, Player2)
-        Input = Agent.convertStateToAgent(State, Agent.scale)
-        InputDeque.append(Input.reshape(-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
+        InputDeque.append(Agent.convertStateToAgent(State, Agent.scale))
 
         if epsilon > np.random.rand():
             action1P = np.random.randint(0, Agent.Outputs)
@@ -121,7 +120,7 @@ def main():
             inputs = np.empty((batch_size, (input_frames * window_dim), int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 if np.all(nextState == -1) == False:
-                    nextState = Agent.convertStateToAgent(State, Agent.scale).reshape(-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))
+                    nextState = Agent.convertStateToAgent(State, Agent.scale)
                     InputDeque.append(nextState)
                     nextState = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
                     with torch.no_grad():
@@ -129,7 +128,7 @@ def main():
                     target = (reward + gamma * torch.max(maxQ)).cpu()
                 else:
                     target = reward
-                state = Agent.convertStateToAgent(State, Agent.scale).reshape((-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
+                state = Agent.convertStateToAgent(State, Agent.scale)
                 InputDeque.append(state)
                 inputs[i] = np.array(InputDeque).reshape((-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
                 targets[i] = Model1P(torch.from_numpy(inputs[i].reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))).float().to(DEVICE)).flatten().detach().cpu().numpy()
@@ -147,7 +146,7 @@ def main():
             inputs = np.empty((batch_size, (input_frames * window_dim), int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
             for i, (state, action, reward, nextState) in enumerate(miniBatch):
                 if np.all(nextState == -1) == False:
-                    nextState = Agent.convertStateToAgent(State, Agent.scale).reshape(-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))
+                    nextState = Agent.convertStateToAgent(State, Agent.scale)
                     InputDeque.append(nextState)
                     nextState = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
                     with torch.no_grad():
@@ -155,7 +154,7 @@ def main():
                     target = (reward + gamma * torch.max(maxQ)).cpu()
                 else:
                     target = reward
-                state = Agent.convertStateToAgent(State, Agent.scale).reshape((-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
+                state = Agent.convertStateToAgent(State, Agent.scale)
                 InputDeque.append(state)
                 inputs[i] = np.array(InputDeque).reshape((-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
                 targets[i] = Model2P(torch.from_numpy(inputs[i].reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))).float().to(DEVICE)).flatten().detach().cpu().numpy()

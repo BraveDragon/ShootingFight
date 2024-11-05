@@ -39,6 +39,8 @@ class Agent(nn.Module):
 
 def convertStateToAgent(state : np.ndarray, scale = 0.25) -> np.ndarray:
     state : np.ndarray = cv2.resize(state.astype(dtype=np.uint8), fx=scale, fy=scale, dsize=None)
+    #cv2.resizeの(幅, 高さ, チャンネル数)形式から(チャンネル数, 幅, 高さ)に変換する
+    state = state.transpose((2, 0, 1))
     g_min = state.min()
     g_max = state.max()
     # 正規化時のゼロ除算対策

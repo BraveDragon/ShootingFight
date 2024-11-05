@@ -45,7 +45,7 @@ def main():
         clock = pygame.time.Clock()
         clock.tick(30)
         state, _, _, _ = Game.getObservation(Player1, Player2)
-        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale).reshape(-1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
+        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale))
         with torch.no_grad():
             Input = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
             Input = torch.from_numpy(Input).float().to(DEVICE)
