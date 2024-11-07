@@ -19,16 +19,19 @@ class Agent(nn.Module):
     def __init__(self):
         super().__init__()
         self.relu = nn.ReLU()
-        self.conv1 = nn.Conv2d(12, 8, 1)
-        self.conv2 = nn.Conv2d(8, 4, 1)
-        self.fc1 = nn.Linear(30000,32)
+        self.conv1 = nn.Conv2d(12, 8, 3)
+        self.conv2 = nn.Conv2d(8, 4, 3)
+        self.pool = nn.MaxPool2d(2, stride=2)
+        self.fc1 = nn.Linear(1564,32)
         self.fc2 = nn.Linear(32, Outputs)
     
     def forward(self, x):
         x = self.conv1(x)
         x = self.relu(x)
+        x = self.pool(x)
         x = self.conv2(x)
         x = self.relu(x)
+        x = self.pool(x)
         x = x.view(x.size()[0], -1)
         x = self.fc1(x)
         x = self.relu(x)
