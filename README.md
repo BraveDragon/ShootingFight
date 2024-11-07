@@ -14,7 +14,7 @@
 
 - Main.pyw：ゲーム本体です。実行すると人間 VS 人間でゲームが始まります。
 
-- Memory.py：Experience Replayed関連の機能を記述しているファイルです。
+- Memory.py：Experience Replay関連の機能を記述しているファイルです。
 
 - Player.py：プレイヤー操作に関連する機能を記述しているファイルです。
 
