@@ -11,14 +11,7 @@ import torch
 import numpy as np
 from collections import deque
 
-screen : pygame.Surface = None
-clock = None
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-memsize = 10000
-batch_size = 32
-JustLooking = 10
-current_episode = 0
 
 Player1 = Player.Player(True)
 Player2 = Player.Player(False)

@@ -2,7 +2,6 @@
 #AIのモデルやその関連関数・定数を定義
 import torch
 import torch.nn as nn
-import torch.optim
 import numpy as np
 import cv2
 
