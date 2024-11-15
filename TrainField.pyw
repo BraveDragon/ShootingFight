@@ -87,8 +87,8 @@ def main():
             with torch.no_grad():
                 Input = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
                 Input = torch.from_numpy(Input).float().to(DEVICE)
-                action1P = torch.argmax(Model1P(Input)).argmax().cpu().detach().numpy()
-                action2P = torch.argmax(Model2P(Input)).argmax().cpu().detach().numpy()
+                action1P = torch.argmax(Model1P(Input)).cpu().detach().numpy()
+                action2P = torch.argmax(Model2P(Input)).cpu().detach().numpy()
         
         NextState, finishedFlag, p1reward, p2reward = Game.update(Player1, Player2, action1P, action2P)
         # 1分(30FPS × 60秒 = 1800フレーム)経っても決着が付かない時は両者負けとみなして次のエピソードへ
