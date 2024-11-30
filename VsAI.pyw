@@ -37,13 +37,15 @@ def main():
         #最大フレームレートを30fpsで固定
         clock = pygame.time.Clock()
         clock.tick(30)
-        state, _, _, _ = Game.getObservation(Player1, Player2)
-        InputDeque.append(Agent.convertStateToAgent(state, Agent.scale))
         with torch.no_grad():
             Input = np.array(InputDeque).reshape((1, -1, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale)))
             Input = torch.from_numpy(Input).float().to(DEVICE)
-            action2P =  torch.argmax(Model2P(Input)).cpu().detach().numpy()
-        Game.update(Player1, Player2, P2Input=action2P)
+            action2P = torch.argmax(Model2P(Input)).cpu().detach().numpy()
+        NextObservation, finishedFlag, _, _ = Game.update(Player1, Player2, P2Input=action2P)
+        InputDeque.append(Agent.convertStateToAgent(NextObservation, Agent.scale))
+        if finishedFlag == True:
+            for _ in range(input_frames):
+                InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
 
 if __name__ == '__main__':
     main()
