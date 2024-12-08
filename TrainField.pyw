@@ -57,8 +57,7 @@ def main():
     input_frames = 4
     window_dim = 3
     InputDeque = deque(maxlen=input_frames)
-    for _ in range(input_frames):
-        InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
+    InputDeque.extend(np.zeros((input_frames, window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
     
     while current_episode < max_episode:
         #最大フレームレートを30fpsで固定
@@ -107,8 +106,7 @@ def main():
             Memory1P.append((State, action1P, p1reward, NextState))
             Memory2P.append((State, action2P, p2reward, NextState))
             step = 0
-            for _ in range(input_frames):
-                InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
+            InputDeque.extend(np.zeros((input_frames, window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
             Game.start(Player1, Player2)
         else:
             InputDeque.append(Agent.convertStateToAgent(NextObservation, Agent.scale))

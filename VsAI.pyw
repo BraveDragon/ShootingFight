@@ -26,8 +26,7 @@ def main():
     input_frames = 4
     window_dim = 3
     InputDeque = deque(maxlen=input_frames)
-    for _ in range(input_frames):
-        InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
+    InputDeque.extend(np.zeros((input_frames, window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -44,8 +43,7 @@ def main():
         NextObservation, finishedFlag, _, _ = Game.update(Player1, Player2, P2Input=action2P)
         InputDeque.append(Agent.convertStateToAgent(NextObservation, Agent.scale))
         if finishedFlag == True:
-            for _ in range(input_frames):
-                InputDeque.append(np.zeros((window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
+            InputDeque.extend(np.zeros((input_frames, window_dim, int(Game.Width * Agent.scale), int(Game.Height * Agent.scale))))
 
 if __name__ == '__main__':
     main()
